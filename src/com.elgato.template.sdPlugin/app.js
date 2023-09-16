@@ -1,7 +1,7 @@
 /// <reference path="libs/js/action.js" />
 /// <reference path="libs/js/stream-deck.js" />
 
-const timerAction = new Action('com.elgato.main.action');
+const timerAction = new Action('com.moeenbagheri.dota2plugin.main');
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 const defaultRecurringEvents = {
@@ -59,7 +59,7 @@ function updateMainButtonDisplay() {
 }
 
 function checkForEvents() {
-    const settings = $SD.getSettings();
+    const settings = $SD.getSettings() || {};
 
     // Convert dictionaries from string to object
     const recurringEvents = JSON.parse(settings.recurringEvents || "{}");
@@ -161,6 +161,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 timerAction.onKeyUp(({ action, context, device, event, payload }) => {
+    console.log('here');
     if (timerRunning) {
         pauseTimer();
     } else {

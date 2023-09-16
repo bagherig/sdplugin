@@ -21,46 +21,46 @@
       "MinimumVersion": "10"
     }
   ],
-  "CategoryIcon": "actions/main/icon.png",
+  "CategoryIcon": "actions/main/assets/icon.png",
   "Actions": [
     {
       "Name": "Main Timer",
-      "UUID": "com.elgato.template.main",
-      "Icon": "actions/main/icon.png",
+      "UUID": "com.moeenbagheri.dota2plugin.main",
+      "Icon": "actions/main/assets/icon.png",
       "Tooltip": "Main timer button for pausing, resuming, and displaying events.",
       "States": [
         {
-          "Image": "actions/main/icon.png",
+          "Image": "actions/main/assets/icon.png",
           "Title": "Main Timer"
         }
       ],
-      "PropertyInspectorPath": "actions/main/property-inspector.html"
+      "PropertyInspectorPath": "actions/main/property-inspector/inspector.html"
     },
     {
       "Name": "Increment Timer",
-      "UUID": "com.elgato.template.increment",
-      "Icon": "actions/increment/icon.png",
+      "UUID": "com.moeenbagheri.dota2plugin.increment",
+      "Icon": "actions/increment/assets/icon.png",
       "Tooltip": "Increment the timer by one second.",
       "States": [
         {
-          "Image": "actions/increment/icon.png",
+          "Image": "actions/increment/assets/icon.png",
           "Title": "Increment"
         }
       ],
-      "PropertyInspectorPath": "actions/increment/property-inspector.html"
+      "PropertyInspectorPath": "actions/increment/property-inspector/inspector.html"
     },
     {
       "Name": "Decrement Timer",
-      "UUID": "com.elgato.template.decrement",
-      "Icon": "actions/decrement/icon.png",
+      "UUID": "com.moeenbagheri.dota2plugin.decrement",
+      "Icon": "actions/decrement/assets/icon.png",
       "Tooltip": "Decrement the timer by one second.",
       "States": [
         {
-          "Image": "actions/decrement/icon.png",
+          "Image": "actions/decrement/assets/icon.png",
           "Title": "Decrement"
         }
       ],
-      "PropertyInspectorPath": "actions/decrement/property-inspector.html"
+      "PropertyInspectorPath": "actions/decrement/property-inspector/inspector.html"
     }
   ]
 }
