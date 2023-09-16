@@ -1,7 +1,7 @@
 /// <reference path="libs/js/action.js" />
 /// <reference path="libs/js/stream-deck.js" />
 
-const myAction = new Action('com.elgato.template.action');
+const timerAction = new Action('com.elgato.main.action');
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 const defaultRecurringEvents = {
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 
-myAction.onKeyUp(({ action, context, device, event, payload }) => {
+timerAction.onKeyUp(({ action, context, device, event, payload }) => {
     if (timerRunning) {
         pauseTimer();
     } else {
@@ -169,9 +169,9 @@ myAction.onKeyUp(({ action, context, device, event, payload }) => {
     }
 });
 
-myAction.onDialRotate(({ action, context, device, event, payload }) => {
-    console.log('Your dial code goes here!');
-});
+// timerAction.onDialRotate(({ action, context, device, event, payload }) => {
+//     console.log('Your dial code goes here!');
+// });
 
 const incrementAction = new Action('com.elgato.increment');
 const decrementAction = new Action('com.elgato.decrement');
