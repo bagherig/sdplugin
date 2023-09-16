@@ -1,13 +1,27 @@
 {
   "SDKVersion": 2,
   "Author": "Moeen Bagheri",
+  "CodePath": "app.html",
   "Description": "DotA-2 game plugin with timer and event notifications.",
   "Category": "Games",
   "Icon": "icon.png",
   "Name": "DotA-2 Game Plugin",
   "Version": "1.0",
-  "OS": ["Mac", "Windows"],
-  "Software": ["StreamDeck"],
+  "URL": "https://www.moeenbagheri.com",
+  "Software": {
+    "MinimumVersion": "5.0"
+  },
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.11"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "CategoryIcon": "actions/main/icon.png",
   "Actions": [
     {
       "Name": "Main Timer",
