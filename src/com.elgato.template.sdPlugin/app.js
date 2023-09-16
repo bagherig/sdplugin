@@ -148,7 +148,7 @@ $SD.onConnected(({ actionInfo, appInfo, connection, messageType, port, uuid }) =
 
 // On app startup
 document.addEventListener("DOMContentLoaded", function() {
-    const settings = $SD.getSettings();
+    const settings = $SD.getSettings() || {};
 
     // Check if recurringEvents and specialEvents are set, if not, set them to default values
     if (!settings.recurringEvents) {
@@ -158,7 +158,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!settings.specialEvents) {
         $SD.setSettings({ specialEvents: JSON.stringify(defaultSpecialEvents) });
     }
-
 });
 
 timerAction.onKeyUp(({ action, context, device, event, payload }) => {
