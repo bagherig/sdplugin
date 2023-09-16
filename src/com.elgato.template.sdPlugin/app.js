@@ -4,6 +4,15 @@
 const myAction = new Action('com.elgato.template.action');
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
+const defaultRecurringEvents = {
+    "Event1": 60,  // Example: Event1 occurs every 60 seconds/minutes based on the user's choice
+    "Event2": 120
+};
+
+const defaultSpecialEvents = {
+    "SpecialEvent1": [30, 90],  // Example: SpecialEvent1 occurs at 30 and 90 seconds/minutes based on the user's choice
+};
+
 let timerValue = 0;
 let timerRunning = false;
 let timerInterval = null;
@@ -135,6 +144,21 @@ function displayIcon(iconFilePath) {
 
 $SD.onConnected(({ actionInfo, appInfo, connection, messageType, port, uuid }) => {
     console.log('Stream Deck connected!');
+});
+
+// On app startup
+document.addEventListener("DOMContentLoaded", function() {
+    const settings = $SD.getSettings();
+
+    // Check if recurringEvents and specialEvents are set, if not, set them to default values
+    if (!settings.recurringEvents) {
+        $SD.setSettings({ recurringEvents: JSON.stringify(defaultRecurringEvents) });
+    }
+
+    if (!settings.specialEvents) {
+        $SD.setSettings({ specialEvents: JSON.stringify(defaultSpecialEvents) });
+    }
+
 });
 
 myAction.onKeyUp(({ action, context, device, event, payload }) => {
