@@ -31,7 +31,7 @@
       "States": [
         {
           "Image": "actions/main/assets/icon.png",
-          "Title": "Main Timer"
+          "Title": "00:00"
         }
       ],
       "PropertyInspectorPath": "actions/main/property-inspector/inspector.html"

@@ -1,21 +1,43 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Load current settings
-    loadSettings();
 
-    // Add event listener for the save button
-    document.getElementById("saveSettings").addEventListener("click", saveSettings);
-});
+for (const ev of Object.values(Events)) {
+    $PI.on(ev, (e) => {
+        console.log(ev, e);
+    })
+}
 
-function loadSettings() {
-    // Retrieve settings using the Stream Deck SDK
-    const settings = $PI.getSettings();
+// Constants and Default Settings
+const defaultRecurringEvents = {
+    "Event1": 2,
+    "Event2": 120
+};
+
+const defaultSpecialEvents = {
+    "SpecialEvent1": [30, 90],
+};
+
+const defaultSettings = {
+    recurringEvents: defaultRecurringEvents,
+    specialEvents: defaultSpecialEvents,
+    timeUnit: "seconds",
+    alertTime: 5,
+    soundSelection: "default"
+};
+
+
+
+// Utility functions
+function loadSettings(settings) {
+    if (!settings) {
+        $PI.setSettings(defaultSettings);
+        settings = defaultSettings;
+    }
 
     // Populate the input fields with the retrieved settings
-    document.getElementById("recurringEvents").value = settings.recurringEvents || "";
-    document.getElementById("specialEvents").value = settings.specialEvents || "";
-    document.getElementById("timeUnit").value = settings.timeUnit || "seconds";
-    document.getElementById("alertTime").value = settings.alertTime || 5;
-    document.getElementById("soundSelection").value = settings.soundSelection || "default";
+    document.getElementById("recurringEvents").value = settings.recurringEvents;
+    document.getElementById("specialEvents").value = settings.specialEvents;
+    document.getElementById("timeUnit").value = settings.timeUnit;
+    document.getElementById("alertTime").value = settings.alertTime;
+    document.getElementById("soundSelection").value = settings.soundSelection;
 }
 
 function saveSettings() {
@@ -35,4 +57,3 @@ function saveSettings() {
         soundSelection: soundSelection
     });
 }
-
