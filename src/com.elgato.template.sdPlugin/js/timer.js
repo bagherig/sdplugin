@@ -1,11 +1,12 @@
 
 for (const ev of Object.values(Events)) {
     $PI.on(ev, (e) => {
-        console.log(ev, e);
+        console.log('$PI', ev, e);
     })
 }
 
-let globalSettings = {};
+
+
 $PI.on('didReceiveGlobalSettings', function (event) {
     globalSettings = event.payload.settings;
     loadSettings();
@@ -48,4 +49,5 @@ function resetToDefaultSettings() {
     $PI.setGlobalSettings(defaultSettings);
     $PI.getGlobalSettings();
 }
+
 

@@ -4,7 +4,7 @@
   "CodePath": "app.html",
   "Description": "DotA-2 game plugin with timer and event notifications.",
   "Category": "Games",
-  "Icon": "actions/main/assets/icon",
+  "Icon": "static/images/timer",
   "Name": "DotA-2 Game Plugin",
   "Version": "1.0",
   "URL": "https://www.moeenbagheri.com",
@@ -21,46 +21,62 @@
       "MinimumVersion": "10"
     }
   ],
-  "CategoryIcon": "actions/main/assets/icon",
+  "CategoryIcon": "static/images/timer",
   "Actions": [
     {
       "Name": "Main Timer",
-      "UUID": "com.moeenbagheri.dota2plugin.main",
-      "Icon": "actions/main/assets/icon",
+      "UUID": "com.moeenbagheri.dota2plugin.timer",
+      "Icon": "static/images/timer",
       "Tooltip": "Main timer button for pausing, resuming, and displaying events.",
       "States": [
         {
-          "Image": "actions/main/assets/icon",
-          "Title": "00:00"
+          "Image": "static/images/timer",
+          "Title": "00:00",
+          "titleAlignment": "middle"
         }
       ],
-      "PropertyInspectorPath": "actions/main/property-inspector/inspector.html"
+      "PropertyInspectorPath": "html/timer.html"
     },
+    {
+      "Name": "Event Display",
+      "UUID": "com.moeenbagheri.dota2plugin.eventDisplay",
+      "Icon": "static/images/eventDisplay",
+      "Tooltip": "Displays the occurring event names",
+      "States": [
+        {
+          "Image": "static/images/eventDisplay",
+          "Title": "[empty]",
+          "titleAlignment": "middle"
+        }
+      ],
+      "PropertyInspectorPath": "html/eventDisplay.html"
+    },
+
     {
       "Name": "Increment Timer",
       "UUID": "com.moeenbagheri.dota2plugin.increment",
-      "Icon": "actions/increment/assets/icon",
+      "Icon": "static/images/increment",
       "Tooltip": "Increment the timer by one second.",
       "States": [
         {
-          "Image": "actions/increment/assets/icon",
+          "Image": "static/images/increment",
           "Title": "Increment"
         }
       ],
-      "PropertyInspectorPath": "actions/increment/property-inspector/inspector.html"
+      "PropertyInspectorPath": "html/increment.html"
     },
     {
       "Name": "Decrement Timer",
       "UUID": "com.moeenbagheri.dota2plugin.decrement",
-      "Icon": "actions/decrement/assets/icon",
+      "Icon": "static/images/decrement",
       "Tooltip": "Decrement the timer by one second.",
       "States": [
         {
-          "Image": "actions/decrement/assets/icon",
+          "Image": "static/images/decrement",
           "Title": "Decrement"
         }
       ],
-      "PropertyInspectorPath": "actions/decrement/property-inspector/inspector.html"
+      "PropertyInspectorPath": "html/decrement.html"
     }
   ]
 }

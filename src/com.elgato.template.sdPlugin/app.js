@@ -5,25 +5,48 @@ for (const ev of Object.values(Events)) {
     })
 }
 
-const timerAction = new Action('com.moeenbagheri.dota2plugin.main');
-const incrementAction = new Action('com.elgato.increment');
-const decrementAction = new Action('com.elgato.decrement');
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+// Events
+
+timerAction.onKeyDown(({ action, context, device, event, payload }) => {
+    resetTimeout = setTimeout(resetTimer, 2000);
+});
+
+timerAction.onKeyUp(event => {
+    clearTimeout(resetTimeout);
+    clearInterval(timerInterval);
+    timerContext = event.context;  // Store the context
+
+    if (timerRunning)
+        pauseTimer();
+    else
+        resumeTimer();
+});
+
+incrementAction.onKeyUp(event => {
+    eventDisplayContext = event.context;
+    incrementTimer();
+});
+
+decrementAction.onKeyUp(event => {
+    console.log('aaaaa')
+    eventDisplayContext = event.context;
+    decrementTimer();
+});
+
+eventDisplayAction.onKeyUp(event => {
+    console.log('heaerea');
+    if (!eventDisplayContext)
+        updateEventDisplay('[SET]')
+
+    eventDisplayContext = event.context;
+});
 
 
-let timerValue = 0;
-let timerRunning = false;
-let timerInterval = null;
-
-let timerButton = null;
-
-
-let globalSettings = {};
-$SD.on('didReceiveGlobalSettings', function (event) {
+$SD.on(Events.didReceiveGlobalSettings, function (event) {
     globalSettings = event.payload.settings;
 });
 
-$SD.on('connected', function (event) {
+$SD.on(Events.connected, function (event) {
     // Request global settings when the plugin connects
     $SD.getGlobalSettings();
 });
@@ -33,7 +56,7 @@ function startTimer() {
     timerRunning = true;
     timerInterval = setInterval(() => {
         timerValue++;
-        updateMainButtonDisplay();
+        updateDisplay();
     }, 1000);
 }
 
@@ -47,27 +70,32 @@ function resumeTimer() {
     startTimer();
 }
 
+function resetTimer() {
+    timerValue = 0;
+    updateDisplay();
+}
+
 function incrementTimer() {
     timerValue++;
-    updateMainButtonDisplay();
+    updateDisplay();
 }
 
 function decrementTimer() {
     if (timerValue > 0) {
         timerValue--;
-        updateMainButtonDisplay();
+        updateDisplay();
     }
 }
 
-function updateMainButtonDisplay() {
+function updateDisplay() {
     const minutes = Math.floor(timerValue / 60);
     const seconds = timerValue % 60;
     const displayTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-    if ($SD && $SD.websocket && timerButton) {
+    if ($SD && $SD.websocket && timerContext) {
         $SD.websocket.send(JSON.stringify({
             "event": "setTitle",
-            "context": timerButton,  // Use the stored context
+            "context": timerContext,  // Use the stored context
             "payload": {
                 "title": displayTime,
                 "target": 0
@@ -76,6 +104,7 @@ function updateMainButtonDisplay() {
     }
     checkForEvents();
 }
+
 
 function checkForEvents() {
     const timeUnit = getSetting('timeUnit');
@@ -105,6 +134,7 @@ function triggerEvent(eventName) {
     // Play the sound
     const alertSound = getSetting('alertSound');
     playSound(`static/alerts/${alertSound}.mp3`);
+    updateEventDisplay(eventName);
 }
 
 function playSound(soundFilePath) {
@@ -122,20 +152,17 @@ function playSound(soundFilePath) {
         });
 }
 
-
-timerAction.onKeyUp(({ action, context, device, event, payload }) => {
-    timerButton = context;  // Store the context
-    if (timerRunning) {
-        pauseTimer();
-    } else {
-        resumeTimer();
+console.log(eventDisplayAction)
+function updateEventDisplay(eventName) {
+    console.log($SD, $SD.websocket, eventDisplayContext)
+    if ($SD && $SD.websocket && eventDisplayContext) {
+        $SD.websocket.send(JSON.stringify({
+            "event": "setTitle",
+            "context": eventDisplayContext,
+            "payload": {
+                "title": eventName,
+                "target": 0
+            }
+        }));
     }
-});
-
-incrementAction.onKeyUp(({ action, context, device, event, payload }) => {
-    incrementTimer();
-});
-
-decrementAction.onKeyUp(({ action, context, device, event, payload }) => {
-    decrementTimer();
-});
+}
