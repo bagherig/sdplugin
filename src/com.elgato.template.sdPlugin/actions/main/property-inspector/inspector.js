@@ -1,43 +1,30 @@
+//
+// for (const ev of Object.values(Events)) {
+//     $PI.on(ev, (e) => {
+//         console.log(ev, e);
+//     })
+// }
 
-for (const ev of Object.values(Events)) {
-    $PI.on(ev, (e) => {
-        console.log(ev, e);
-    })
-}
+import {defaultSettings} from "../../../app";
 
-// Constants and Default Settings
-const defaultRecurringEvents = {
-    "Event1": 2,
-    "Event2": 120
-};
+$PI.on('connected', function (event) {
+    console.log('hereeeee')
+    $PI.getGlobalSettings();
+});
 
-const defaultSpecialEvents = {
-    "SpecialEvent1": [30, 90],
-};
-
-const defaultSettings = {
-    recurringEvents: defaultRecurringEvents,
-    specialEvents: defaultSpecialEvents,
-    timeUnit: "seconds",
-    alertTime: 5,
-    soundSelection: "default"
-};
+$PI.on('didReceiveGlobalSettings', function (event) {
+    // Check if the settings are empty
+    loadSettings(event.payload.settings);
+});
 
 
-
-// Utility functions
 function loadSettings(settings) {
-    if (!settings) {
-        $PI.setSettings(defaultSettings);
-        settings = defaultSettings;
-    }
-
     // Populate the input fields with the retrieved settings
-    document.getElementById("recurringEvents").value = settings.recurringEvents;
-    document.getElementById("specialEvents").value = settings.specialEvents;
+    document.getElementById("recurringEvents").value = JSON.stringify(settings.recurringEvents);
+    document.getElementById("specialEvents").value = JSON.stringify(settings.specialEvents);
     document.getElementById("timeUnit").value = settings.timeUnit;
     document.getElementById("alertTime").value = settings.alertTime;
-    document.getElementById("soundSelection").value = settings.soundSelection;
+    document.getElementById("alertSound").value = settings.alertSound;
 }
 
 function saveSettings() {
@@ -46,14 +33,19 @@ function saveSettings() {
     const specialEvents = document.getElementById("specialEvents").value;
     const timeUnit = document.getElementById("timeUnit").value;
     const alertTime = document.getElementById("alertTime").value;
-    const soundSelection = document.getElementById("soundSelection").value;
+    const alertSound = document.getElementById("alertSound").value;
 
     // Save the settings using the Stream Deck SDK
-    $PI.setSettings({
-        recurringEvents: recurringEvents,
-        specialEvents: specialEvents,
+    $PI.setGlobalSettings({
+        recurringEvents: JSON.parse(recurringEvents),
+        specialEvents: JSON.parse(specialEvents),
         timeUnit: timeUnit,
         alertTime: alertTime,
-        soundSelection: soundSelection
+        alertSound: alertSound
     });
 }
+
+function resetToDefaultSettings() {
+    $PI.setGlobalSettings(defaultSettings);
+}
+

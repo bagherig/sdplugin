@@ -19,6 +19,44 @@ function startTimer() {
     }, 1000);
 }
 
+// Settings:
+let globalSettings = {}; // Store settings at the plugin level for easy access
+const defaultRecurringEvents = {
+    "Event1": 3,
+    "Event2": 120
+};
+
+const defaultSpecialEvents = {
+    "SpecialEvent1": [30, 90],
+};
+
+const defaultSettings = {
+    recurringEvents: defaultRecurringEvents,
+    specialEvents: defaultSpecialEvents,
+    timeUnit: "seconds",
+    alertTime: 5,
+    alertSound: `actions/template/assets/alert.mp3`
+}
+
+
+$SD.on('didReceiveGlobalSettings', function (event) {
+    // Check if the settings are empty
+    if (!event.payload.settings || Object.keys(event.payload.settings).length === 0) {
+        // If they are, set them to the default values
+        $SD.setGlobalSettings(defaultSettings);
+    } else {
+        // Otherwise, update the globalSettings variable with the received settings
+        globalSettings = event.payload.settings;
+    }
+});
+
+$SD.on('connected', function (event) {
+    // Request global settings when the plugin connects
+    $SD.getGlobalSettings();
+});
+
+
+// Functions
 function pauseTimer() {
     timerRunning = false;
     clearInterval(timerInterval);
@@ -59,52 +97,29 @@ function updateMainButtonDisplay() {
 }
 
 function checkForEvents() {
-    const settings = $SD.getSettings() || {};
-    const recurringEvents = JSON.parse(settings.recurringEvents || "{}");
-    const specialEvents = JSON.parse(settings.specialEvents || "{}");
-    const alertTime = settings.alertTime || 5;
-
-    for (const eventName in recurringEvents) {
-        const interval = settings.timeUnit === "minutes" ? recurringEvents[eventName] * 60 : recurringEvents[eventName];
-        if ((timerValue + alertTime) % interval === 0) {
+    for (const eventName in globalSettings.recurringEvents) {
+        const interval = globalSettings.timeUnit === "minutes" ?
+            globalSettings.recurringEvents[eventName] * 60 : globalSettings.recurringEvents[eventName];
+        if ((timerValue + globalSettings.alertTime) % interval === 0) {
             triggerEvent(eventName);
+            console.log(eventName);
         }
     }
 
-    for (const eventName in specialEvents) {
-        const eventTimes = settings.timeUnit === "minutes" ? specialEvents[eventName].map(t => t * 60) : specialEvents[eventName];
-        if (eventTimes.includes(timerValue + alertTime)) {
+    for (const eventName in globalSettings.specialEvents) {
+        const eventTimes = globalSettings.timeUnit === "minutes" ?
+            globalSettings.specialEvents[eventName].map(t => t * 60) : globalSettings.specialEvents[eventName];
+        if (eventTimes.includes(timerValue + globalSettings.alertTime)) {
             triggerEvent(eventName);
         }
     }
 }
 
 function triggerEvent(eventName) {
-    const soundSelection = $SD.getSettings().soundSelection || "default";
-    const soundFilePath = `actions/template/assets/alert.mp3`;
-    playSound(soundFilePath);
+    console.log(globalSettings.alertSound)
 
-    const iconFilePath = `actions/template/assets/bounty.jpg`;
-    displayIcon(iconFilePath);
-    eventQueue.push(eventName);
-
-    if (eventQueue.length === 1) {
-        displayNextEvent(iconFilePath);
-    }
-}
-
-function displayNextEvent() {
-    if (eventQueue.length === 0) return;
-    const currentEvent = eventQueue[0];
-    const iconFilePath = `actions/template/assets/bounty.jpg`;
-    displayIcon(iconFilePath);
-
-    setTimeout(() => {
-        eventQueue.shift();
-        if (eventQueue.length > 0) {
-            setTimeout(displayNextEvent, eventSwitchInterval);
-        }
-    }, eventDisplayDuration);
+    // Play the sound
+    playSound(globalSettings.alertSound);
 }
 
 function playSound(soundFilePath) {
@@ -122,9 +137,6 @@ function playSound(soundFilePath) {
         });
 }
 
-function displayIcon(iconFilePath) {
-    $SD.setImage(iconFilePath);
-}
 
 timerAction.onKeyUp(({ action, context, device, event, payload }) => {
     timerButton = context;  // Store the context
@@ -146,12 +158,9 @@ decrementAction.onKeyUp(({ action, context, device, event, payload }) => {
     decrementTimer();
 });
 
+
 for (const ev of Object.values(Events)) {
     $SD.on(ev, (e) => {
         console.log(ev, e);
     })
 }
-$SD.onConnected(function (event) {
-    // Code to execute when an action is added to the Stream Deck
-    console.log("Action added to the Stream Deck! onConnected", event);
-});

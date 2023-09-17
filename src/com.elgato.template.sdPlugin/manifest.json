@@ -4,7 +4,7 @@
   "CodePath": "app.html",
   "Description": "DotA-2 game plugin with timer and event notifications.",
   "Category": "Games",
-  "Icon": "icon.png",
+  "Icon": "actions/main/assets/icon",
   "Name": "DotA-2 Game Plugin",
   "Version": "1.0",
   "URL": "https://www.moeenbagheri.com",
@@ -21,16 +21,16 @@
       "MinimumVersion": "10"
     }
   ],
-  "CategoryIcon": "actions/main/assets/icon.png",
+  "CategoryIcon": "actions/main/assets/icon",
   "Actions": [
     {
       "Name": "Main Timer",
       "UUID": "com.moeenbagheri.dota2plugin.main",
-      "Icon": "actions/main/assets/icon.png",
+      "Icon": "actions/main/assets/icon",
       "Tooltip": "Main timer button for pausing, resuming, and displaying events.",
       "States": [
         {
-          "Image": "actions/main/assets/icon.png",
+          "Image": "actions/main/assets/icon",
           "Title": "00:00"
         }
       ],
@@ -39,11 +39,11 @@
     {
       "Name": "Increment Timer",
       "UUID": "com.moeenbagheri.dota2plugin.increment",
-      "Icon": "actions/increment/assets/icon.png",
+      "Icon": "actions/increment/assets/icon",
       "Tooltip": "Increment the timer by one second.",
       "States": [
         {
-          "Image": "actions/increment/assets/icon.png",
+          "Image": "actions/increment/assets/icon",
           "Title": "Increment"
         }
       ],
@@ -52,11 +52,11 @@
     {
       "Name": "Decrement Timer",
       "UUID": "com.moeenbagheri.dota2plugin.decrement",
-      "Icon": "actions/decrement/assets/icon.png",
+      "Icon": "actions/decrement/assets/icon",
       "Tooltip": "Decrement the timer by one second.",
       "States": [
         {
-          "Image": "actions/decrement/assets/icon.png",
+          "Image": "actions/decrement/assets/icon",
           "Title": "Decrement"
         }
       ],

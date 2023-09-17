@@ -1,40 +1,73 @@
-<!-- Recurring Events Dictionary -->
-<div>
-    <h3>Recurring Events</h3>
-    <textarea id="recurringEvents"></textarea>
-</div>
+<!DOCTYPE HTML>
+<html>
 
-<!-- Special Events Dictionary -->
-<div>
-    <h3>Special Events</h3>
-    <textarea id="specialEvents"></textarea>
-</div>
+<head>
+    <title>com.moeenbagheri.dota2plugin.main</title>
+    <meta charset="utf-8"/>
+    <style>
+        html, body {
+            background-color: transparent;
+        }
+    </style>
+</head>
 
-<!-- Time Unit Selection -->
-<div>
-    <h3>Time Unit</h3>
-    <select id="timeUnit">
-        <option value="seconds">Seconds</option>
-        <option value="minutes">Minutes</option>
-    </select>
-</div>
+<body>
+    <!-- Recurring Events Dictionary -->
+    <div>
+        <h3>Recurring Events</h3>
+        <textarea id="recurringEvents"></textarea>
+    </div>
 
-<!-- Alert Time -->
-<div>
-    <h3>Alert Time (seconds)</h3>
-    <input type="number" id="alertTime" min="1" />
-</div>
+    <!-- Special Events Dictionary -->
+    <div>
+        <h3>Special Events</h3>
+        <textarea id="specialEvents"></textarea>
+    </div>
 
-<!-- Sound Selection -->
-<div>
-    <h3>Notification Sound</h3>
-    <select id="soundSelection">
-        <option value="default">Default Sound</option>
-        <!-- Additional sound options can be added here -->
-    </select>
-</div>
+    <!-- Time Unit Selection -->
+    <div>
+        <h3>Time Unit</h3>
+        <select id="timeUnit">
+            <option value="seconds">Seconds</option>
+            <option value="minutes">Minutes</option>
+        </select>
+    </div>
 
-<!-- Save Button -->
-<button id="saveSettings">Save Settings</button>
+    <!-- Alert Time -->
+    <div>
+        <h3>Alert Time (seconds)</h3>
+        <input type="number" id="alertTime" min="1" />
+    </div>
 
-<script src="inspector.js"></script>
+    <!-- Sound Selection -->
+    <div>
+        <h3>Notification Sound</h3>
+        <select id="alertSound">
+            <option value="default">Default Sound</option>
+            <!-- Additional sound options can be added here -->
+        </select>
+    </div>
+
+    <!-- Reset Button -->
+    <button id="resetSettings" onclick="resetToDefaultSettings()">Reset to Default</button>
+
+    <!-- Save Button -->
+    <button id="saveSettings" onclick="saveSettings()">Save Settings</button>
+
+
+
+    <!-- Stream Deck Libs -->
+    <script src="../../../libs/js/constants.js"></script>
+    <script src="../../../libs/js/prototypes.js"></script>
+    <script src="../../../libs/js/timers.js"></script>
+    <script src="../../../libs/js/utils.js"></script>
+    <script src="../../../libs/js/events.js"></script>
+    <script src="../../../libs/js/api.js"></script>
+    <script src="../../../libs/js/property-inspector.js"></script>
+    <script src="../../../libs/js/dynamic-styles.js"></script>
+
+    <!-- Property Inspector Source -->
+    <script src="inspector.js"></script>
+</body>
+
+</html>
