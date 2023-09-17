@@ -1,5 +1,9 @@
-/// <reference path="libs/js/action.js" />
-/// <reference path="libs/js/stream-deck.js" />
+
+for (const ev of Object.values(Events)) {
+    $SD.on(ev, (e) => {
+        console.log(ev, e);
+    })
+}
 
 const timerAction = new Action('com.moeenbagheri.dota2plugin.main');
 const incrementAction = new Action('com.elgato.increment');
@@ -14,6 +18,7 @@ let timerInterval = null;
 let timerButton = null;
 
 
+let globalSettings = {};
 $SD.on('didReceiveGlobalSettings', function (event) {
     globalSettings = event.payload.settings;
 });
@@ -134,10 +139,3 @@ incrementAction.onKeyUp(({ action, context, device, event, payload }) => {
 decrementAction.onKeyUp(({ action, context, device, event, payload }) => {
     decrementTimer();
 });
-
-
-// for (const ev of Object.values(Events)) {
-//     $SD.on(ev, (e) => {
-//         console.log(ev, e);
-//     })
-// }

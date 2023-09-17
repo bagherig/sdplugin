@@ -1,4 +1,5 @@
 // Settings:
+
 const defaultRecurringEvents = {
     "Jungle Creeps": 1,
     "Power Rune": 2,
@@ -19,8 +20,7 @@ const defaultSettings = {
 }
 
 
-let globalSettings = {}; // Store settings at the plugin level for easy access
-
 function getSetting(name) {
-    return globalSettings[name] || defaultSettings[name];
+    console.log(globalSettings);
+    return globalSettings?.[name] || defaultSettings[name];
 }

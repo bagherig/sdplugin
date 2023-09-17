@@ -1,12 +1,18 @@
-//
-// for (const ev of Object.values(Events)) {
-//     $PI.on(ev, (e) => {
-//         console.log(ev, e);
-//     })
-// }
+
+for (const ev of Object.values(Events)) {
+    $PI.on(ev, (e) => {
+        console.log(ev, e);
+    })
+}
+
+let globalSettings = {};
+$PI.on('didReceiveGlobalSettings', function (event) {
+    globalSettings = event.payload.settings;
+    loadSettings();
+});
 
 $PI.on('connected', function (event) {
-    loadSettings();
+    $PI.getGlobalSettings();
 });
 
 
@@ -35,9 +41,11 @@ function saveSettings() {
         alertTime: parseInt(alertTime),
         alertSound: alertSound
     });
+    $PI.getGlobalSettings();
 }
 
 function resetToDefaultSettings() {
     $PI.setGlobalSettings(defaultSettings);
+    $PI.getGlobalSettings();
 }
 
