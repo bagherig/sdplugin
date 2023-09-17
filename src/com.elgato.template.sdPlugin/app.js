@@ -2,6 +2,8 @@
 /// <reference path="libs/js/stream-deck.js" />
 
 const timerAction = new Action('com.moeenbagheri.dota2plugin.main');
+const incrementAction = new Action('com.elgato.increment');
+const decrementAction = new Action('com.elgato.decrement');
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 
@@ -11,43 +13,9 @@ let timerInterval = null;
 
 let timerButton = null;
 
-function startTimer() {
-    timerRunning = true;
-    timerInterval = setInterval(() => {
-        timerValue++;
-        updateMainButtonDisplay();
-    }, 1000);
-}
-
-// Settings:
-let globalSettings = {}; // Store settings at the plugin level for easy access
-const defaultRecurringEvents = {
-    "Event1": 3,
-    "Event2": 120
-};
-
-const defaultSpecialEvents = {
-    "SpecialEvent1": [30, 90],
-};
-
-const defaultSettings = {
-    recurringEvents: defaultRecurringEvents,
-    specialEvents: defaultSpecialEvents,
-    timeUnit: "seconds",
-    alertTime: 5,
-    alertSound: `actions/template/assets/alert.mp3`
-}
-
 
 $SD.on('didReceiveGlobalSettings', function (event) {
-    // Check if the settings are empty
-    if (!event.payload.settings || Object.keys(event.payload.settings).length === 0) {
-        // If they are, set them to the default values
-        $SD.setGlobalSettings(defaultSettings);
-    } else {
-        // Otherwise, update the globalSettings variable with the received settings
-        globalSettings = event.payload.settings;
-    }
+    globalSettings = event.payload.settings;
 });
 
 $SD.on('connected', function (event) {
@@ -55,6 +23,14 @@ $SD.on('connected', function (event) {
     $SD.getGlobalSettings();
 });
 
+
+function startTimer() {
+    timerRunning = true;
+    timerInterval = setInterval(() => {
+        timerValue++;
+        updateMainButtonDisplay();
+    }, 1000);
+}
 
 // Functions
 function pauseTimer() {
@@ -97,29 +73,33 @@ function updateMainButtonDisplay() {
 }
 
 function checkForEvents() {
-    for (const eventName in globalSettings.recurringEvents) {
-        const interval = globalSettings.timeUnit === "minutes" ?
-            globalSettings.recurringEvents[eventName] * 60 : globalSettings.recurringEvents[eventName];
-        if ((timerValue + globalSettings.alertTime) % interval === 0) {
+    const timeUnit = getSetting('timeUnit');
+    const alertTime = getSetting('alertTime');
+    const currTime = timerValue + alertTime;
+
+    const recurringEvents = getSetting('recurringEvents');
+    for (const eventName in recurringEvents) {
+        const interval = timeUnit === "minutes" ?
+            recurringEvents[eventName] * 60 : recurringEvents[eventName];
+        if (currTime % interval === 0) {
             triggerEvent(eventName);
-            console.log(eventName);
         }
     }
 
-    for (const eventName in globalSettings.specialEvents) {
-        const eventTimes = globalSettings.timeUnit === "minutes" ?
-            globalSettings.specialEvents[eventName].map(t => t * 60) : globalSettings.specialEvents[eventName];
-        if (eventTimes.includes(timerValue + globalSettings.alertTime)) {
+    const specialEvents = getSetting('specialEvents');
+    for (const eventName in specialEvents) {
+        const eventTimes = timeUnit === "minutes" ?
+            specialEvents[eventName].map(t => t * 60) : specialEvents[eventName];
+        if (eventTimes.includes(currTime)) {
             triggerEvent(eventName);
         }
     }
 }
 
 function triggerEvent(eventName) {
-    console.log(globalSettings.alertSound)
-
     // Play the sound
-    playSound(globalSettings.alertSound);
+    const alertSound = getSetting('alertSound');
+    playSound(`static/alerts/${alertSound}.mp3`);
 }
 
 function playSound(soundFilePath) {
@@ -147,9 +127,6 @@ timerAction.onKeyUp(({ action, context, device, event, payload }) => {
     }
 });
 
-const incrementAction = new Action('com.elgato.increment');
-const decrementAction = new Action('com.elgato.decrement');
-
 incrementAction.onKeyUp(({ action, context, device, event, payload }) => {
     incrementTimer();
 });
@@ -159,8 +136,8 @@ decrementAction.onKeyUp(({ action, context, device, event, payload }) => {
 });
 
 
-for (const ev of Object.values(Events)) {
-    $SD.on(ev, (e) => {
-        console.log(ev, e);
-    })
-}
+// for (const ev of Object.values(Events)) {
+//     $SD.on(ev, (e) => {
+//         console.log(ev, e);
+//     })
+// }

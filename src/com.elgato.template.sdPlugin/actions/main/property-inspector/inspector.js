@@ -5,26 +5,18 @@
 //     })
 // }
 
-import {defaultSettings} from "../../../app";
-
 $PI.on('connected', function (event) {
-    console.log('hereeeee')
-    $PI.getGlobalSettings();
-});
-
-$PI.on('didReceiveGlobalSettings', function (event) {
-    // Check if the settings are empty
-    loadSettings(event.payload.settings);
+    loadSettings();
 });
 
 
-function loadSettings(settings) {
+function loadSettings() {
     // Populate the input fields with the retrieved settings
-    document.getElementById("recurringEvents").value = JSON.stringify(settings.recurringEvents);
-    document.getElementById("specialEvents").value = JSON.stringify(settings.specialEvents);
-    document.getElementById("timeUnit").value = settings.timeUnit;
-    document.getElementById("alertTime").value = settings.alertTime;
-    document.getElementById("alertSound").value = settings.alertSound;
+    document.getElementById("recurringEvents").value = JSON.stringify(getSetting("recurringEvents"));
+    document.getElementById("specialEvents").value = JSON.stringify(getSetting("specialEvents"));
+    document.getElementById("timeUnit").value = getSetting("timeUnit");
+    document.getElementById("alertTime").value = getSetting("alertTime");
+    document.getElementById("alertSound").value = getSetting("alertSound");
 }
 
 function saveSettings() {
@@ -40,7 +32,7 @@ function saveSettings() {
         recurringEvents: JSON.parse(recurringEvents),
         specialEvents: JSON.parse(specialEvents),
         timeUnit: timeUnit,
-        alertTime: alertTime,
+        alertTime: parseInt(alertTime),
         alertSound: alertSound
     });
 }
