@@ -28,12 +28,16 @@ const defaultSpecialEvents = {
     },
 };
 
+const defaultSoundOptions = [
+    'Default'
+];
+
 const defaultSettings = {
     recurringEvents: defaultRecurringEvents,
     specialEvents: defaultSpecialEvents,
     timeUnit: "minutes",
     alertTime: 15,
-    alertSound: "default"
+    soundOptions: defaultSoundOptions
 }
 
 function getSetting(name) {

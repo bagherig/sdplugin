@@ -4,24 +4,49 @@
 <head>
     <title>com.moeenbagheri.dota2plugin.timer</title>
     <meta charset="utf-8"/>
-    <style>
-        html, body {
-            background-color: transparent;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/sdpi.css">
 </head>
 
 <body>
+    <input type="file" id="soundUpload" accept="audio/*" style="display:none;">
+
     <!-- Recurring Events Dictionary -->
     <div>
         <h3>Recurring Events</h3>
-        <textarea id="recurringEvents"></textarea>
+        <table id="recurringEventsTable">
+            <thead>
+                <tr>
+                    <th>NAME</th>
+                    <th>Interval</th>
+                    <th>Alert Sound</th>
+                    <th>Alert Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+        <button id="addRecurringEvent">Add Event</button>
     </div>
+
 
     <!-- Special Events Dictionary -->
     <div>
         <h3>Special Events</h3>
-        <textarea id="specialEvents"></textarea>
+        <table id="specialEventsTable">
+            <thead>
+                <tr>
+                    <th>NAME</th>
+                    <th>Times</th>
+                    <th>Alert Sound</th>
+                    <th>Alert Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+        <button id="addSpecialEvent">Add Event</button>
     </div>
 
     <!-- Time Unit Selection -->
@@ -30,21 +55,6 @@
         <select id="timeUnit">
             <option value="seconds">Seconds</option>
             <option value="minutes">Minutes</option>
-        </select>
-    </div>
-
-    <!-- Alert Time -->
-    <div>
-        <h3>Alert Time (seconds)</h3>
-        <input type="number" id="alertTime" min="1" />
-    </div>
-
-    <!-- Sound Selection -->
-    <div>
-        <h3>Notification Sound</h3>
-        <select id="alertSound">
-            <option value="default">Default Sound</option>
-            <!-- Additional sound options can be added here -->
         </select>
     </div>
 
@@ -66,8 +76,6 @@
     <!-- Property Inspector Source -->
     <script src="../js/settings.js"></script>
     <script src="../js/timer.js"></script>
-    <script src="../js/display.js"></script>
-
 </body>
 
 </html>

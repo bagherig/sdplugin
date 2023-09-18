@@ -85,7 +85,6 @@ function decrementTimer() {
 }
 
 function updateTimer() {
-    console.log('here')
     const timerValue = getTimerValue();
     const minutes = Math.floor(timerValue / 60);
     const seconds = timerValue % 60;
