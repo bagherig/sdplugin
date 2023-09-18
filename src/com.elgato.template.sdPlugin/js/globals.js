@@ -3,7 +3,8 @@
 const timerAction = new Action('com.moeenbagheri.dota2plugin.timer');
 let timerContext = null;
 
-let timerValue = 0;
+let timerStart = null;
+let timerOffset = 0;
 let timerRunning = false;
 let timerInterval = null;
 let resetTimeout = null;
@@ -16,33 +17,12 @@ let incrementContext = null;
 const decrementAction = new Action('com.moeenbagheri.dota2plugin.decrement');
 let decrementContext = null;
 
-// EventDisplay Action
-const eventDisplayAction = new Action('com.moeenbagheri.dota2plugin.eventDisplay');
-let eventDisplayContext = null;
+// display Action
+const displayAction = new Action('com.moeenbagheri.dota2plugin.display');
+let displayContext = null;
+let displayText = "";
 
 
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 let globalSettings = {};
-const defaultRecurringEvents = {
-    "Jungle Creeps": 1,
-    "Power Rune": 2,
-    "Bounty Rune": 3,
-    "Exp Rune": 7
-};
-
-const defaultSpecialEvents = {
-    "SpecialEvent1": [30, 90],
-};
-
-const defaultSettings = {
-    recurringEvents: defaultRecurringEvents,
-    specialEvents: defaultSpecialEvents,
-    timeUnit: "minutes",
-    alertTime: 15,
-    alertSound: "default"
-}
-
-function getSetting(name) {
-    return globalSettings?.[name] || defaultSettings[name];
-}

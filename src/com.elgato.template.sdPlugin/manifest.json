@@ -39,17 +39,17 @@
     },
     {
       "Name": "Event Display",
-      "UUID": "com.moeenbagheri.dota2plugin.eventDisplay",
-      "Icon": "static/images/eventDisplay",
+      "UUID": "com.moeenbagheri.dota2plugin.display",
+      "Icon": "static/images/display",
       "Tooltip": "Displays the occurring event names",
       "States": [
         {
-          "Image": "static/images/eventDisplay",
+          "Image": "static/images/display",
           "Title": "[empty]",
           "titleAlignment": "middle"
         }
       ],
-      "PropertyInspectorPath": "html/eventDisplay.html"
+      "PropertyInspectorPath": "html/display.html"
     },
 
     {

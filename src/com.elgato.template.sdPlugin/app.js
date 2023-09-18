@@ -5,59 +5,61 @@ for (const ev of Object.values(Events)) {
     })
 }
 
-// Events
+function setEvents() {
+    $SD.on(Events.didReceiveGlobalSettings, function (event) {
+        globalSettings = event.payload.settings;
+    });
 
-timerAction.onKeyDown(({ action, context, device, event, payload }) => {
-    resetTimeout = setTimeout(resetTimer, 2000);
-});
+    $SD.on(Events.connected, function (event) {
+        // Request global settings when the plugin connects
+        $SD.getGlobalSettings();
+        resetTimer();
+    });
 
-timerAction.onKeyUp(event => {
-    clearTimeout(resetTimeout);
-    clearInterval(timerInterval);
-    timerContext = event.context;  // Store the context
+    timerAction.onKeyDown(({ action, context, device, event, payload }) => {
+        resetTimeout = setTimeout(resetTimer, 1500);
+    });
 
-    if (timerRunning)
-        pauseTimer();
-    else
-        resumeTimer();
-});
+    timerAction.onKeyUp(event => {
+        clearTimeout(resetTimeout);
+        clearInterval(timerInterval);
+        timerContext = event.context;  // Store the context
 
-incrementAction.onKeyUp(event => {
-    eventDisplayContext = event.context;
-    incrementTimer();
-});
+        if (timerRunning)
+            pauseTimer();
+        else
+            startTimer();
+    });
 
-decrementAction.onKeyUp(event => {
-    console.log('aaaaa')
-    eventDisplayContext = event.context;
-    decrementTimer();
-});
+    incrementAction.onKeyUp(event => {
+        incrementContext = event.context;
+        incrementTimer();
+    });
 
-eventDisplayAction.onKeyUp(event => {
-    console.log('heaerea');
-    if (!eventDisplayContext)
-        updateEventDisplay('[SET]')
+    decrementAction.onKeyUp(event => {
+        decrementContext = event.context;
+        decrementTimer();
+    });
 
-    eventDisplayContext = event.context;
-});
+    displayAction.onKeyDown(event => {
+        displayContext = event.context;
+        addDisplay('[SET]')
+        setTimeout(addDisplay, 3000);
+    });
+}
+setEvents();
 
-
-$SD.on(Events.didReceiveGlobalSettings, function (event) {
-    globalSettings = event.payload.settings;
-});
-
-$SD.on(Events.connected, function (event) {
-    // Request global settings when the plugin connects
-    $SD.getGlobalSettings();
-});
-
+function getTimerValue() {
+    const timerValue = timerStart ? (Date.now() - timerStart) / 1000 : 0;
+    return Math.floor(timerValue + timerOffset);
+}
 
 function startTimer() {
     timerRunning = true;
-    timerInterval = setInterval(() => {
-        timerValue++;
-        updateDisplay();
-    }, 1000);
+    timerOffset = getTimerValue();
+    timerStart = Date.now();
+    updateTimer();
+    timerInterval = setInterval(updateTimer, 1000);
 }
 
 // Functions
@@ -66,28 +68,25 @@ function pauseTimer() {
     clearInterval(timerInterval);
 }
 
-function resumeTimer() {
-    startTimer();
-}
-
 function resetTimer() {
-    timerValue = 0;
-    updateDisplay();
+    timerStart = timerOffset = 0;
+    pauseTimer();
+    updateTimer();
 }
 
 function incrementTimer() {
-    timerValue++;
-    updateDisplay();
+    timerOffset++;
+    updateTimer();
 }
 
 function decrementTimer() {
-    if (timerValue > 0) {
-        timerValue--;
-        updateDisplay();
-    }
+    timerOffset--;
+    updateTimer();
 }
 
-function updateDisplay() {
+function updateTimer() {
+    console.log('here')
+    const timerValue = getTimerValue();
     const minutes = Math.floor(timerValue / 60);
     const seconds = timerValue % 60;
     const displayTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -109,22 +108,22 @@ function updateDisplay() {
 function checkForEvents() {
     const timeUnit = getSetting('timeUnit');
     const alertTime = getSetting('alertTime');
-    const currTime = timerValue + alertTime;
+    const shiftedTime = getTimerValue() + alertTime;
 
     const recurringEvents = getSetting('recurringEvents');
     for (const eventName in recurringEvents) {
-        const interval = timeUnit === "minutes" ?
-            recurringEvents[eventName] * 60 : recurringEvents[eventName];
-        if (currTime % interval === 0) {
+        let interval = recurringEvents[eventName].interval;
+        interval = timeUnit === "minutes" ? interval * 60 : interval;
+        if (shiftedTime % interval === 0) {
             triggerEvent(eventName);
         }
     }
 
     const specialEvents = getSetting('specialEvents');
     for (const eventName in specialEvents) {
-        const eventTimes = timeUnit === "minutes" ?
-            specialEvents[eventName].map(t => t * 60) : specialEvents[eventName];
-        if (eventTimes.includes(currTime)) {
+        let eventTimes = specialEvents[eventName].times;
+        eventTimes = timeUnit === "minutes" ? eventTimes.map(t => t * 60) : eventTimes;
+        if (eventTimes.includes(shiftedTime)) {
             triggerEvent(eventName);
         }
     }
@@ -134,7 +133,8 @@ function triggerEvent(eventName) {
     // Play the sound
     const alertSound = getSetting('alertSound');
     playSound(`static/alerts/${alertSound}.mp3`);
-    updateEventDisplay(eventName);
+    addDisplay(eventName);
+    setTimeout(removeDisplay, (globalSettings.alertTime + 5) * 1000);
 }
 
 function playSound(soundFilePath) {
@@ -152,17 +152,31 @@ function playSound(soundFilePath) {
         });
 }
 
-console.log(eventDisplayAction)
-function updateEventDisplay(eventName) {
-    console.log($SD, $SD.websocket, eventDisplayContext)
-    if ($SD && $SD.websocket && eventDisplayContext) {
+function addDisplay(eventName="") {
+    if ($SD && $SD.websocket && displayContext) {
+        displayText = eventName ? (displayText ? displayText + '\n' + eventName : eventName) : "";
         $SD.websocket.send(JSON.stringify({
             "event": "setTitle",
-            "context": eventDisplayContext,
+            "context": displayContext,
             "payload": {
-                "title": eventName,
+                "title": displayText,
                 "target": 0
             }
         }));
+    }
+}
+
+function removeDisplay() {
+    if ($SD && $SD.websocket && displayContext) {
+        displayText = displayText.split('\n').slice(1).join('\n');
+        $SD.websocket.send(JSON.stringify({
+            "event": "setTitle",
+            "context": displayContext,
+            "payload": {
+                "title": displayText,
+                "target": 0
+            }
+        }));
+        setTimeout(removeDisplay, (globalSettings.alertTime + 5) * 1000);
     }
 }
