@@ -114,7 +114,7 @@ function checkForEvents() {
         let interval = recurringEvents[eventName].interval;
         interval = timeUnit === "minutes" ? interval * 60 : interval;
         if (shiftedTime % interval === 0) {
-            triggerEvent(eventName);
+            triggerEvent(eventName, recurringEvents[eventName]);
         }
     }
 
@@ -123,17 +123,18 @@ function checkForEvents() {
         let eventTimes = specialEvents[eventName].times;
         eventTimes = timeUnit === "minutes" ? eventTimes.map(t => t * 60) : eventTimes;
         if (eventTimes.includes(shiftedTime)) {
-            triggerEvent(eventName);
+            triggerEvent(eventName, specialEvents[eventName]);
         }
     }
 }
 
-function triggerEvent(eventName) {
+function triggerEvent(eventName, eventData) {
+    console.log(eventData)
     // Play the sound
-    const alertSound = getSetting('alertSound');
+    const alertSound = eventData.alertSound.replace(' ', '_').toLowerCase();
     playSound(`static/alerts/${alertSound}.mp3`);
     addDisplay(eventName);
-    setTimeout(removeDisplay, (globalSettings.alertTime + 5) * 1000);
+    setTimeout(removeDisplay, (eventData.alertTime + 5) * 1000);
 }
 
 function playSound(soundFilePath) {

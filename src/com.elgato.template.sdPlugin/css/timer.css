@@ -1,0 +1,82 @@
+.container {
+    margin-bottom: 5px;
+    padding: 0 0 10px 0;
+    border: 1px solid;
+}
+
+h3 {
+    padding: 0;
+    margin: 0 0 10px 0;
+    border-bottom: 1px solid;
+    text-align: center;
+}
+
+button {
+    margin: 2px 2px 0 0;
+}
+
+.btn-container {
+    width: fit-content;
+    margin: 5px 10px 0 auto;
+}
+
+table {
+    max-width: 100%;
+    margin-left: 0;
+    padding: 0;
+    border: none;
+}
+
+tr {
+    display: flex;
+    flex-direction: row;
+}
+
+td {
+    display: flex;
+    flex-basis: auto;
+}
+
+td:first-child, th:first-child {
+    width: 30%;
+}
+
+td:nth-child(2), th:nth-child(2){
+    width: 20%;
+}
+
+td:nth-child(3), th:nth-child(3){
+    width: 20%;
+}
+
+
+td:nth-child(4), th:nth-child(4){
+    width: 20%;
+}
+
+td:nth-child(5), th:nth-child(5){
+    width: 20%;
+}
+
+input {
+    width: 100%;
+    min-width: unset !important;
+}
+
+table button {
+    margin: 0;
+    width: 100%;
+}
+
+table input[type="number"] {
+    text-align: center;
+}
+
+table select {
+    width: 100%;
+}
+
+#timeUnit {
+    display: flex;
+    margin: 0 auto;
+}

@@ -5,52 +5,60 @@
     <title>com.moeenbagheri.dota2plugin.timer</title>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="../css/sdpi.css">
+    <link rel="stylesheet" href="../css/timer.css">
 </head>
 
 <body>
     <input type="file" id="soundUpload" accept="audio/*" style="display:none;">
 
     <!-- Recurring Events Dictionary -->
-    <div>
+    <div class="container">
         <h3>Recurring Events</h3>
         <table id="recurringEventsTable">
             <thead>
                 <tr>
                     <th>NAME</th>
                     <th>Interval</th>
-                    <th>Alert Sound</th>
-                    <th>Alert Time</th>
+                    <th>Sound</th>
+                    <th>Offset (s)</th>
+                    <th> </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="recurringEventsTableBody">
                 <!-- Rows will be dynamically added here -->
             </tbody>
         </table>
-        <button id="addRecurringEvent">Add Event</button>
+
+        <div class="btn-container">
+            <button id="addRecurringEvent">Add Event</button>
+        </div>
     </div>
 
-
     <!-- Special Events Dictionary -->
-    <div>
+    <div class="container">
         <h3>Special Events</h3>
         <table id="specialEventsTable">
             <thead>
                 <tr>
                     <th>NAME</th>
                     <th>Times</th>
-                    <th>Alert Sound</th>
-                    <th>Alert Time</th>
+                    <th>Sound</th>
+                    <th>Offset (s)</th>
+                    <th> </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="specialEventsTableBody">
                 <!-- Rows will be dynamically added here -->
             </tbody>
         </table>
-        <button id="addSpecialEvent">Add Event</button>
+
+        <div class="btn-container">
+            <button id="addSpecialEvent">Add Event</button>
+        </div>
     </div>
 
     <!-- Time Unit Selection -->
-    <div>
+    <div class="container">
         <h3>Time Unit</h3>
         <select id="timeUnit">
             <option value="seconds">Seconds</option>
@@ -58,12 +66,13 @@
         </select>
     </div>
 
-    <!-- Reset Button -->
-    <button id="resetSettings" onclick="resetToDefaultSettings()">Reset to Default</button>
+    <div class="btn-container">
+        <!-- Reset Button -->
+        <button id="resetSettings" onclick="resetToDefaultSettings()">Reset to Default</button>
 
-    <!-- Save Button -->
-    <button id="saveSettings" onclick="saveSettings()">Save Settings</button>
-
+        <!-- Save Button -->
+        <button id="saveSettings" onclick="saveSettings()">Save Settings</button>
+    </div>
 
 
     <!-- Stream Deck Libs -->

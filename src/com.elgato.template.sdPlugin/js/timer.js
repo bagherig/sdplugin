@@ -72,10 +72,7 @@ function addSpecialEventRow(eventName, eventData) {
 
     headerCell.innerHTML = `<input type="text" value="${eventName ?? "Event Name"}">`;
     timesCell.innerHTML = `<input type="text" value="${eventData?.times ?? "5, 10"}">`;
-    alertSoundCell.innerHTML =  `<select id="alertSound">
-            <option value="default">Default Sound</option>
-            <!-- Additional sound options can be added here -->
-        </select> `;
+    alertSoundCell.innerHTML = `<select>${generateSoundOptions(eventData?.alertSound ?? 'Default')}</select>`;
     alertTimeCell.innerHTML = `<input type="number" value="${eventData?.alertTime ?? 15}">`;
     actionsCell.innerHTML = '<button onclick="removeSpecialEventRow(this)">Remove</button>';
 }
@@ -90,12 +87,14 @@ function loadSettings() {
     document.getElementById("timeUnit").value = getSetting("timeUnit");
 
     // Load recurring events
+    document.getElementById("recurringEventsTableBody").innerHTML = "";
     const recurringEvents = globalSettings.recurringEvents || {};
     Object.entries(recurringEvents).forEach(([eventName, eventData]) => {
         addRecurringEventRow(eventName, eventData);
     });
 
     // Load special events
+    document.getElementById("specialEventsTableBody").innerHTML = "";
     const specialEvents = globalSettings.specialEvents || {};
     Object.entries(specialEvents).forEach(([eventName, eventData]) => {
         addSpecialEventRow(eventName, eventData);
@@ -112,7 +111,7 @@ function saveSettings() {
     recurringRows.forEach(row => {
         const eventName = row.cells[0].querySelector("input").value;
         const interval = row.cells[1].querySelector("input").value;
-        const alertSound = row.cells[2].querySelector("input").value;
+        const alertSound = row.cells[2].querySelector("select").value;
         const alertTime = row.cells[3].querySelector("input").value;
 
         recurringEvents[eventName] = { interval, alertSound, alertTime };
@@ -124,7 +123,7 @@ function saveSettings() {
     specialRows.forEach(row => {
         const eventName = row.cells[0].querySelector("input").value;
         const times = row.cells[1].querySelector("input").value.split(',').map(x => parseInt(x.trim()));
-        const alertSound = row.cells[2].querySelector("input").value;
+        const alertSound = row.cells[2].querySelector("select").value;
         const alertTime = row.cells[3].querySelector("input").value;
 
         specialEvents[eventName] = { times, alertSound, alertTime };
@@ -132,11 +131,10 @@ function saveSettings() {
 
     // Save the settings using the Stream Deck SDK
     $PI.setGlobalSettings({
+        ...globalSettings,
         recurringEvents: recurringEvents,
         specialEvents: specialEvents,
         timeUnit: timeUnit,
-        alertTime: parseInt(alertTime),
-        alertSound: alertSound
     });
     $PI.getGlobalSettings();
 }
