@@ -29,11 +29,18 @@ function addRecurringEventRow(eventName, eventData) {
     const actionsCell = row.insertCell(4);
 
     headerCell.innerHTML = `<input type="text" value="${eventName ?? "Event Name"}">`;
-    intervalCell.innerHTML = `<input type="number" value="${eventData?.interval ?? 5}">`;
+    intervalCell.innerHTML = `
+        <input id="start" type="number" value="${eventData?.start ?? 0}" title="Start Time">
+        <input id="interval" type="number" value="${eventData?.interval ?? 1}" title="Interval">
+        <input id="end" type="number" value="${eventData?.end ?? 60}" title="End Time">`;
     alertSoundCell.innerHTML = `<select onchange="playSound(event.target.value)">
-        ${generateSoundOptions(eventData?.alertSound ?? 'Default')}</select>`;
+        ${generateSoundOptions(eventData?.alertSound ?? 'Default')}</select>
+    `;
     alertTimeCell.innerHTML = `<input type="number" value="${eventData?.alertTime ?? 15}">`;
-    actionsCell.innerHTML = '<button onclick="removeRecurringEventRow(this)">DEL</button>';
+    actionsCell.innerHTML = `
+        <button onclick="removeRecurringEventRow(this)">DEL</button>
+        <input id="isDisplayed" type="checkbox" ${eventData?.isDisplayed ? "checked" : ""}>
+    `;
 }
 
 function generateSoundOptions(selectedSound) {
@@ -59,7 +66,8 @@ function addSpecialEventRow(eventName, eventData) {
 
     headerCell.innerHTML = `<input type="text" value="${eventName ?? "Event Name"}">`;
     timesCell.innerHTML = `<input type="text" value="${eventData?.times ?? "5, 10"}">`;
-    alertSoundCell.innerHTML = `<select>${generateSoundOptions(eventData?.alertSound ?? 'Default')}</select>`;
+    alertSoundCell.innerHTML = `<select onchange="playSound(event.target.value)">
+        ${generateSoundOptions(eventData?.alertSound ?? 'Default')}</select>`;
     alertTimeCell.innerHTML = `<input type="number" value="${eventData?.alertTime ?? 15}">`;
     actionsCell.innerHTML = '<button onclick="removeSpecialEventRow(this)">DEL</button>';
 }
@@ -97,11 +105,14 @@ function saveSettings() {
     const recurringRows = document.getElementById("recurringEventsTable").querySelectorAll("tbody tr");
     recurringRows.forEach(row => {
         const eventName = row.cells[0].querySelector("input").value;
-        const interval = row.cells[1].querySelector("input").value;
+        const start = row.cells[1].querySelector("#start").value;
+        const interval = row.cells[1].querySelector("#interval").value;
+        const end = row.cells[1].querySelector("#end").value;
         const alertSound = row.cells[2].querySelector("select").value;
         const alertTime = parseInt(row.cells[3].querySelector("input").value);
+        const isDisplayed = row.cells[4].querySelector("input").checked;
 
-        recurringEvents[eventName] = { interval, alertSound, alertTime };
+        recurringEvents[eventName] = { interval, start, end, alertSound, alertTime, isDisplayed};
     });
 
     // Save special events

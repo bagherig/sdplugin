@@ -99,10 +99,17 @@ function checkForEvents() {
 
     const recurringEvents = getGlobalSetting('recurringEvents');
     for (const [eventName, eventData] of Object.entries(recurringEvents)) {
-        let interval = eventData.interval;
-        interval = timeUnit === "minutes" ? interval * 60 : interval;
+        const mult = timeUnit === "minutes" ? 60 : 1;
+        const start = eventData.start * mult;
+        const end = eventData.end * mult;
+        const interval = eventData.interval * mult;
+
         const shiftedTime = timer.time + parseInt(eventData.alertTime);
-        if (shiftedTime && shiftedTime % interval === 0) {
+        const isStarted = (!start || parseInt(start) < shiftedTime);
+        const isTime = (shiftedTime && (shiftedTime % interval) === 0);
+        const isEnded = (end && parseInt(end) < shiftedTime);
+
+        if (isStarted && isTime && !isEnded) {
             triggerEvent(eventName, eventData);
         }
     }
@@ -112,6 +119,7 @@ function checkForEvents() {
         let eventTimes = specialEvents[eventName].times;
         eventTimes = timeUnit === "minutes" ? eventTimes.map(t => t * 60) : eventTimes;
         const shiftedTime = timer.time + parseInt(eventData.alertTime);
+
         if (eventTimes.includes(shiftedTime)) {
             triggerEvent(eventName, specialEvents[eventName]);
         }
@@ -121,8 +129,10 @@ function checkForEvents() {
 function triggerEvent(eventName, eventData) {
     // Play the sound
     playSound(eventData.alertSound);
-    addDisplay(eventName);
-    setTimeout(removeDisplay, (parseInt(eventData.alertTime) + 5) * 1000);
+    if (eventData.isDisplayed) {
+        addDisplay(eventName);
+        setTimeout(removeDisplay, (parseInt(eventData.alertTime) + 5) * 1000);
+    }
 }
 
 function addDisplay(eventName = "") {

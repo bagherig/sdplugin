@@ -1,7 +1,7 @@
 {
   "SDKVersion": 2,
   "Author": "Moeen Bagheri",
-  "CodePath": "app.html",
+  "CodePath": "html/app.html",
   "Description": "DotA-2 game plugin with timer and event notifications.",
   "Category": "Games",
   "Icon": "static/images/timer",

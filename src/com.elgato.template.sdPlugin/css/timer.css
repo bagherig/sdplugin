@@ -25,6 +25,7 @@ table {
     margin-left: 0;
     padding: 0;
     border: none;
+    /*background-color: var(--sdpi-background);*/
 }
 
 tr {
@@ -35,7 +36,7 @@ tr {
 td {
     display: flex;
     flex-basis: auto;
-    padding: 0;
+    padding: 1px 1px 1px 1px;
 }
 
 td:first-child, th:first-child {
@@ -47,7 +48,7 @@ td:nth-child(2), th:nth-child(2){
 }
 
 td:nth-child(3), th:nth-child(3){
-    width: 25%;
+    width: 20%;
 }
 
 
@@ -56,13 +57,21 @@ td:nth-child(4), th:nth-child(4){
 }
 
 td:nth-child(5), th:nth-child(5){
-    width: 10%;
+    width: 15%;
 }
 
 input {
     width: 100%;
     margin: 0 !important;
     min-width: unset !important;
+}
+
+input[type="checkbox"] {
+    display: flex !important;
+    -webkit-appearance: auto !important;
+    width: fit-content;
+    align-self: center;
+    height: 10px;
 }
 
 table button {

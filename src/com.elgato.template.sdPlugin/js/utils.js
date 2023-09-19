@@ -1,8 +1,9 @@
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 function playSound(name) {
+    console.log(location)
     name = name.replace(' ', '_').toLowerCase();
-    const soundFilePath = `./static/alerts/${name}.mp3`;
+    const soundFilePath = `../static/alerts/${name}.mp3`;
     fetch(soundFilePath)
         .then(response => response.arrayBuffer())
         .then(data => audioContext.decodeAudioData(data))
