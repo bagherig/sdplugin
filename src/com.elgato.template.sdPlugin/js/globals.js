@@ -6,13 +6,11 @@ let timerTimeout = null;
 
 // Increment Action
 const incrementAction = new Action('com.moeenbagheri.dota2plugin.increment');
-let incrementContext = null;
-let incSteps = {};
+let incrementSteps = {};
 
 // Decrement Action
 const decrementAction = new Action('com.moeenbagheri.dota2plugin.decrement');
-let decrementContext = null;
-let decSteps = {};
+let decrementSteps = {};
 
 // display Action
 const displayAction = new Action('com.moeenbagheri.dota2plugin.display');
@@ -25,6 +23,10 @@ const muteAction = new Action('com.moeenbagheri.dota2plugin.mute');
 let muteContext = null;
 let isMuted = false; // Variable to track mute state
 
+// image Action
+const imageAction = new Action('com.moeenbagheri.dota2plugin.image');
+let imageShowings = {};
+let imageTimeouts = {};
+
 // Settings
 let globalSettings = {};
-let localSettings = {};

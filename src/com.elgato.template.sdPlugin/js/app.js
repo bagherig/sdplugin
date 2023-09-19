@@ -36,34 +36,34 @@ function setEvents() {
 
     // incrementAction
     incrementAction.onWillAppear(event => {
-        incrementContext = event.context;
-        $SD.getSettings(incrementContext);
+        incrementSteps[event.context] = 1;
+        $SD.getSettings(event.context);
     });
 
     incrementAction.onDidReceiveSettings(event => {
         const step = event.payload.settings.step || 1;
         $SD.setTitle(event.context, `${step}`, 0);
-        incSteps[event.context] = parseInt(step);
+        incrementSteps[event.context] = parseInt(step);
     });
 
     incrementAction.onKeyUp(event => {
-        timer.increment(parseInt(incSteps[event.context]));
+        timer.increment(parseInt(incrementSteps[event.context]));
     });
 
     // decrementAction
     decrementAction.onWillAppear(event => {
-        decrementContext = event.context;
-        $SD.getSettings(decrementContext);
+        decrementSteps[event.context] = 1;
+        $SD.getSettings(event.context);
     });
 
     decrementAction.onDidReceiveSettings(event => {
         const step = event.payload.settings.step || 1;
         $SD.setTitle(event.context, `${step}`, 0);
-        decSteps[event.context] = parseInt(step);
+        decrementSteps[event.context] = parseInt(step);
     });
 
     decrementAction.onKeyUp(event => {
-        timer.decrement(parseInt(decSteps[event.context]));
+        timer.decrement(parseInt(decrementSteps[event.context]));
     });
 
     // displayAction
@@ -86,6 +86,15 @@ function setEvents() {
 
     muteAction.onKeyUp(event => {
         toggleMute();
+    });
+
+    // imageAction
+    imageAction.onWillAppear(event => {
+        removeDisplayImage(event.context);
+    });
+
+    imageAction.onKeyUp(event => {
+        removeDisplayImage(event.context);
     });
 }
 setEvents();
@@ -140,21 +149,53 @@ function triggerEvent(eventName, eventData) {
     if (!isMuted) playSound(eventData.alertSound);
 
     if (eventData.isDisplayed) {
-        addDisplay(eventName);
-        setTimeout(removeDisplay, (parseInt(eventData.alertTime) + 5) * 1000);
+        addDisplayName(eventName);
+        setTimeout(removeDisplayName, (parseInt(eventData.alertTime) + Math.max(parseInt(eventData.alertTime), 10)) * 1000);
+
+        if (eventData.image) {
+            addDisplayImage(eventData.image, (parseInt(eventData.alertTime) + Math.max(parseInt(eventData.alertTime), 30)) * 1000);
+        }
     }
 }
 
-function addDisplay(eventName = "") {
+function addDisplayName(eventName = "") {
     if ($SD && displayContext) {
         displayText = eventName ? (displayText ? displayText + '\n' + eventName : eventName) : "";
         $SD.setTitle(displayContext, displayText, 0);
     }
 }
 
-function removeDisplay() {
+function removeDisplayName() {
     if ($SD && displayContext) {
-        $SD.setTitle(displayContext, "", 0);
+        displayText = displayText ? displayText.split('\n').slice(1).join('\n') : "";
+        $SD.setTitle(displayContext, displayText, 0);
+    }
+}
+
+function addDisplayImage(eventImage, duration=0, context=null) {
+    if ($SD) {
+        if (!context) {
+            for ([imageContext, isBusy] of Object.entries(imageShowings)) {
+                if (!isBusy) {
+                    context = imageContext;
+                    break;
+                }
+            }
+        }
+        if (context) {
+            $SD.setImage(context, eventImage, 0);
+            imageShowings[context] = true;
+            if (duration > 0)
+                imageTimeouts[context] = setTimeout(() => removeDisplayImage(context), duration);
+        }
+    }
+}
+
+function removeDisplayImage(context) {
+    if ($SD && context) {
+        $SD.setImage(context, `../static/images/blank.png`, 0);
+        imageShowings[context] = false;
+        clearTimeout(imageTimeouts[context]);
     }
 }
 

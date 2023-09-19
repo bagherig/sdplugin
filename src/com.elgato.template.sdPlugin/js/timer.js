@@ -69,7 +69,10 @@ function addSpecialEventRow(eventName, eventData) {
     alertSoundCell.innerHTML = `<select onchange="playSound(event.target.value)">
         ${generateSoundOptions(eventData?.alertSound ?? 'Default')}</select>`;
     alertTimeCell.innerHTML = `<input type="number" value="${eventData?.alertTime ?? 15}">`;
-    actionsCell.innerHTML = '<button onclick="removeSpecialEventRow(this)">DEL</button>';
+    actionsCell.innerHTML = `
+        <button onclick="removeSpecialEventRow(this)">DEL</button>
+        <input id="isDisplayed" type="checkbox" ${eventData?.isDisplayed ? "checked" : ""}>
+    `;
 }
 
 function removeSpecialEventRow(buttonElement) {
@@ -101,7 +104,7 @@ function saveSettings() {
     const timeUnit = document.getElementById("timeUnit").value;
 
     // Save recurring events
-    const recurringEvents = {};
+    const recurringEvents = globalSettings?.recurringEvents || {};
     const recurringRows = document.getElementById("recurringEventsTable").querySelectorAll("tbody tr");
     recurringRows.forEach(row => {
         const eventName = row.cells[0].querySelector("input").value;
@@ -112,19 +115,20 @@ function saveSettings() {
         const alertTime = parseInt(row.cells[3].querySelector("input").value);
         const isDisplayed = row.cells[4].querySelector("input").checked;
 
-        recurringEvents[eventName] = { interval, start, end, alertSound, alertTime, isDisplayed};
+        recurringEvents[eventName] = {...(recurringEvents?.[eventName] || {}), interval, start, end, alertSound, alertTime, isDisplayed};
     });
 
     // Save special events
-    const specialEvents = {};
+    const specialEvents = globalSettings?.specialEvents || {};
     const specialRows = document.getElementById("specialEventsTable").querySelectorAll("tbody tr");
     specialRows.forEach(row => {
         const eventName = row.cells[0].querySelector("input").value;
         const times = row.cells[1].querySelector("input").value.split(',').map(x => parseInt(x.trim()));
         const alertSound = row.cells[2].querySelector("select").value;
         const alertTime = parseInt(row.cells[3].querySelector("input").value);
+        const isDisplayed = row.cells[4].querySelector("input").checked;
 
-        specialEvents[eventName] = { times, alertSound, alertTime };
+        specialEvents[eventName] = {...(specialEvents?.[eventName] || {}), times, alertSound, alertTime, isDisplayed };
     });
 
     // Save the settings using the Stream Deck SDK
