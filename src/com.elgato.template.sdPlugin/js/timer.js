@@ -1,3 +1,7 @@
+
+
+let globalSettings;
+
 $PI.on('didReceiveGlobalSettings', function (event) {
     globalSettings = event.payload.settings;
     loadSettings();
@@ -24,12 +28,6 @@ $PI.on('connected', function (event) {
             soundUpload.click();
         }
     });
-    document.getElementById("soundUpload").addEventListener("change", function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            saveSound(file);
-        }
-    });
 });
 
 function addRecurringEventRow(eventName, eventData) {
@@ -44,7 +42,8 @@ function addRecurringEventRow(eventName, eventData) {
 
     headerCell.innerHTML = `<input type="text" value="${eventName ?? "Event Name"}">`;
     intervalCell.innerHTML = `<input type="number" value="${eventData?.interval ?? 5}">`;
-    alertSoundCell.innerHTML = `<select>${generateSoundOptions(eventData?.alertSound ?? 'Default')}</select>`;
+    alertSoundCell.innerHTML = `<select onchange="playSound(event.target.value)">
+        ${generateSoundOptions(eventData?.alertSound ?? 'Default')}</select>`;
     alertTimeCell.innerHTML = `<input type="number" value="${eventData?.alertTime ?? 15}">`;
     actionsCell.innerHTML = '<button onclick="removeRecurringEventRow(this)">Remove</button>';
 }
@@ -84,7 +83,7 @@ function removeSpecialEventRow(buttonElement) {
 
 function loadSettings() {
     // Populate the input fields with the retrieved settings
-    document.getElementById("timeUnit").value = getSetting("timeUnit");
+    document.getElementById("timeUnit").value = getGlobalSetting("timeUnit");
 
     // Load recurring events
     document.getElementById("recurringEventsTableBody").innerHTML = "";
@@ -142,13 +141,4 @@ function saveSettings() {
 function resetToDefaultSettings() {
     $PI.setGlobalSettings(defaultSettings);
     $PI.getGlobalSettings();
-}
-
-
-
-
-for (const ev of Object.values(Events)) {
-    $PI.on(ev, (e) => {
-        console.log('$PI', ev, e);
-    })
 }

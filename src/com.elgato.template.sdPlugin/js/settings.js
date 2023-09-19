@@ -2,7 +2,7 @@ const defaultRecurringEvents = {
     "Jungle": {
         'interval': 1,
         'alertSound': 'Ping 3',
-        'alertTime': 20,
+        'alertTime': 18,
     },
     "Power.R": {
         'interval': 2,
@@ -57,6 +57,10 @@ const defaultSettings = {
     soundOptions: defaultSoundOptions
 }
 
-function getSetting(name) {
+function getGlobalSetting(name) {
     return globalSettings?.[name] || defaultSettings[name];
+}
+
+function getSetting(name) {
+    return localSettings?.[name];
 }

@@ -4,17 +4,18 @@
 <head>
     <title>com.moeenbagheri.dota2plugin.increment</title>
     <meta charset="utf-8"/>
-    <style>
-        html, body {
-            background-color: transparent;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/sdpi.css">
+    <link rel="stylesheet" href="../css/increment.css">
 </head>
 
 <body>
     <div>
         <h3>Increment Button</h3>
-        <p>This button increments the timer by one second.</p>
+        <p>This button increments the timer.</p>
+
+        <label> Step:
+            <input id="step"  type="number" min="1" value="1">
+        </label>
     </div>
 
     <!-- Stream Deck Libs -->
@@ -22,8 +23,11 @@
     <script src="../libs/js/events.js"></script>
     <script src="../libs/js/api.js"></script>
     <script src="../libs/js/property-inspector.js"></script>
+    <script src="../libs/js/action.js"></script>
 
     <!-- Property Inspector Source -->
+    <script src="../js/settings.js"></script>
+    <script src="../js/increment.js"></script>
 </body>
 
 </html>

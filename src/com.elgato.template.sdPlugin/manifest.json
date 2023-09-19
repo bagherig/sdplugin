@@ -45,7 +45,7 @@
       "States": [
         {
           "Image": "static/images/display",
-          "Title": "[empty]",
+          "Title": "",
           "titleAlignment": "middle"
         }
       ],
@@ -60,7 +60,7 @@
       "States": [
         {
           "Image": "static/images/increment",
-          "Title": "Increment"
+          "Title": "+1"
         }
       ],
       "PropertyInspectorPath": "html/increment.html"
@@ -73,7 +73,7 @@
       "States": [
         {
           "Image": "static/images/decrement",
-          "Title": "Decrement"
+          "Title": "–1"
         }
       ],
       "PropertyInspectorPath": "html/decrement.html"

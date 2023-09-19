@@ -1,9 +1,10 @@
 
-for (const ev of Object.values(Events)) {
-    $SD.on(ev, (e) => {
-        console.log(ev, e);
-    })
-}
+const timerUpdateCallback = (time) => {
+    updateTimer(time);
+    checkForEvents();
+};
+
+const timer = new Clock(timerUpdateCallback);
 
 function setEvents() {
     $SD.on(Events.didReceiveGlobalSettings, function (event) {
@@ -13,115 +14,105 @@ function setEvents() {
     $SD.on(Events.connected, function (event) {
         // Request global settings when the plugin connects
         $SD.getGlobalSettings();
-        resetTimer();
+        timer.reset();
+    });
+
+    // timerAction
+    timerAction.onWillAppear(event => {
+        timerContext = event.context;
     });
 
     timerAction.onKeyDown(({ action, context, device, event, payload }) => {
-        resetTimeout = setTimeout(resetTimer, 1500);
+        timerTimeout = setTimeout(() => timer.reset(), 1500);
     });
 
     timerAction.onKeyUp(event => {
-        clearTimeout(resetTimeout);
-        clearInterval(timerInterval);
-        timerContext = event.context;  // Store the context
-
-        if (timerRunning)
-            pauseTimer();
+        clearTimeout(timerTimeout);
+        if (timer.running)
+            timer.pause();
         else
-            startTimer();
+            timer.start();
+    });
+
+    // incrementAction
+    incrementAction.onWillAppear(event => {
+        incrementContext = event.context;
+        $SD.getSettings(incrementContext);
+    });
+
+    incrementAction.onDidReceiveSettings(event => {
+        const step = event.payload.settings.step;
+        $SD.setTitle(event.context, `–${step}`, 0);
+        incSteps[event.context] = parseInt(step);
     });
 
     incrementAction.onKeyUp(event => {
-        incrementContext = event.context;
-        incrementTimer();
+        timer.increment(incSteps[event.context]);
+    });
+
+    // decrementAction
+    decrementAction.onWillAppear(event => {
+        decrementContext = event.context;
+        $SD.getSettings(decrementContext);
+    });
+
+    decrementAction.onDidReceiveSettings(event => {
+        const step = event.payload.settings.step;
+        $SD.setTitle(event.context, `–${step}`, 0);
+        decSteps[event.context] = parseInt(step);
     });
 
     decrementAction.onKeyUp(event => {
-        decrementContext = event.context;
-        decrementTimer();
+        timer.decrement(decSteps[event.context]);
     });
 
-    displayAction.onKeyDown(event => {
+    // displayAction
+    displayAction.onWillAppear(event => {
         displayContext = event.context;
-        addDisplay('[SET]')
-        setTimeout(addDisplay, 3000);
+    });
+
+    displayAction.onKeyDown(({ action, context, device, event, payload }) => {
+        displayTimeout = setTimeout(addDisplay, 1500);
+    });
+
+    displayAction.onKeyUp(event => {
+        clearTimeout(displayTimeout);
     });
 }
 setEvents();
 
-function getTimerValue() {
-    const timerValue = timerStart ? (Date.now() - timerStart) / 1000 : 0;
-    return Math.floor(timerValue + timerOffset);
-}
-
-function startTimer() {
-    timerRunning = true;
-    timerOffset = getTimerValue();
-    timerStart = Date.now();
-    updateTimer();
-    timerInterval = setInterval(updateTimer, 1000);
-}
-
-// Functions
-function pauseTimer() {
-    timerRunning = false;
-    clearInterval(timerInterval);
-}
-
-function resetTimer() {
-    timerStart = timerOffset = 0;
-    pauseTimer();
-    updateTimer();
-}
-
-function incrementTimer() {
-    timerOffset++;
-    updateTimer();
-}
-
-function decrementTimer() {
-    timerOffset--;
-    updateTimer();
-}
-
-function updateTimer() {
-    const timerValue = getTimerValue();
-    const minutes = Math.floor(timerValue / 60);
-    const seconds = timerValue % 60;
-    const displayTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+function updateTimer(currentTime) {
+    let displayTime = `–${(-currentTime).toString().padStart(2, '0')}`;
+    if (currentTime >= 0) {
+        const minutes = Math.floor(currentTime / 60);
+        const seconds = currentTime % 60;
+        displayTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
 
     if ($SD && $SD.websocket && timerContext) {
-        $SD.websocket.send(JSON.stringify({
-            "event": "setTitle",
-            "context": timerContext,  // Use the stored context
-            "payload": {
-                "title": displayTime,
-                "target": 0
-            }
-        }));
+        $SD.setTitle(timerContext, displayTime, 0);
     }
-    checkForEvents();
 }
 
-
 function checkForEvents() {
-    const timeUnit = getSetting('timeUnit');
-    const alertTime = getSetting('alertTime');
-    const shiftedTime = getTimerValue() + alertTime;
+    const timeUnit = getGlobalSetting('timeUnit');
+    const alertTime = getGlobalSetting('alertTime');
 
-    const recurringEvents = getSetting('recurringEvents');
-    for (const eventName in recurringEvents) {
-        let interval = recurringEvents[eventName].interval;
+    const recurringEvents = getGlobalSetting('recurringEvents');
+    for (const [eventName, eventData] of Object.entries(recurringEvents)) {
+        let interval = eventData.interval;
         interval = timeUnit === "minutes" ? interval * 60 : interval;
-        if (shiftedTime % interval === 0) {
-            triggerEvent(eventName, recurringEvents[eventName]);
+        const shiftedTime = timer.time + eventData.alertTime;
+        if (shiftedTime && shiftedTime % interval === 0) {
+            triggerEvent(eventName, eventData);
         }
     }
 
-    const specialEvents = getSetting('specialEvents');
-    for (const eventName in specialEvents) {
+    const specialEvents = getGlobalSetting('specialEvents');
+    for (const [eventName, eventData] of Object.entries(specialEvents)) {
         let eventTimes = specialEvents[eventName].times;
         eventTimes = timeUnit === "minutes" ? eventTimes.map(t => t * 60) : eventTimes;
+        const shiftedTime = timer.time + eventData.alertTime;
         if (eventTimes.includes(shiftedTime)) {
             triggerEvent(eventName, specialEvents[eventName]);
         }
@@ -129,54 +120,23 @@ function checkForEvents() {
 }
 
 function triggerEvent(eventName, eventData) {
-    console.log(eventData)
     // Play the sound
-    const alertSound = eventData.alertSound.replace(' ', '_').toLowerCase();
-    playSound(`static/alerts/${alertSound}.mp3`);
+    playSound(eventData.alertSound);
     addDisplay(eventName);
     setTimeout(removeDisplay, (eventData.alertTime + 5) * 1000);
 }
 
-function playSound(soundFilePath) {
-    fetch(soundFilePath)
-        .then(response => response.arrayBuffer())
-        .then(data => audioContext.decodeAudioData(data))
-        .then(buffer => {
-            const source = audioContext.createBufferSource();
-            source.buffer = buffer;
-            source.connect(audioContext.destination);
-            source.start();
-        })
-        .catch(error => {
-            console.error("Error playing sound:", error);
-        });
-}
-
-function addDisplay(eventName="") {
+function addDisplay(eventName = "") {
     if ($SD && $SD.websocket && displayContext) {
         displayText = eventName ? (displayText ? displayText + '\n' + eventName : eventName) : "";
-        $SD.websocket.send(JSON.stringify({
-            "event": "setTitle",
-            "context": displayContext,
-            "payload": {
-                "title": displayText,
-                "target": 0
-            }
-        }));
+        $SD.setTitle(displayContext, displayText, 0);
     }
 }
 
 function removeDisplay() {
     if ($SD && $SD.websocket && displayContext) {
         displayText = displayText.split('\n').slice(1).join('\n');
-        $SD.websocket.send(JSON.stringify({
-            "event": "setTitle",
-            "context": displayContext,
-            "payload": {
-                "title": displayText,
-                "target": 0
-            }
-        }));
+        $SD.setTitle(displayContext, displayText, 0);
         setTimeout(removeDisplay, (globalSettings.alertTime + 5) * 1000);
     }
 }
