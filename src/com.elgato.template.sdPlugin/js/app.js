@@ -41,8 +41,8 @@ function setEvents() {
     });
 
     incrementAction.onDidReceiveSettings(event => {
-        const step = event.payload.settings.step;
-        $SD.setTitle(event.context, `–${step}`, 0);
+        const step = event.payload.settings.step || 1;
+        $SD.setTitle(event.context, `${step}`, 0);
         incSteps[event.context] = parseInt(step);
     });
 
@@ -57,8 +57,8 @@ function setEvents() {
     });
 
     decrementAction.onDidReceiveSettings(event => {
-        const step = event.payload.settings.step;
-        $SD.setTitle(event.context, `–${step}`, 0);
+        const step = event.payload.settings.step || 1;
+        $SD.setTitle(event.context, `${step}`, 0);
         decSteps[event.context] = parseInt(step);
     });
 
@@ -78,6 +78,15 @@ function setEvents() {
     displayAction.onKeyUp(event => {
         clearTimeout(displayTimeout);
     });
+
+    // muteAction
+    muteAction.onWillAppear(event => {
+        muteContext = event.context;
+    });
+
+    muteAction.onKeyUp(event => {
+        toggleMute();
+    });
 }
 setEvents();
 
@@ -89,7 +98,7 @@ function updateTimer(currentTime) {
         displayTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
-    if ($SD && $SD.websocket && timerContext) {
+    if ($SD && timerContext) {
         $SD.setTitle(timerContext, displayTime, 0);
     }
 }
@@ -128,7 +137,8 @@ function checkForEvents() {
 
 function triggerEvent(eventName, eventData) {
     // Play the sound
-    playSound(eventData.alertSound);
+    if (!isMuted) playSound(eventData.alertSound);
+
     if (eventData.isDisplayed) {
         addDisplay(eventName);
         setTimeout(removeDisplay, (parseInt(eventData.alertTime) + 5) * 1000);
@@ -136,14 +146,22 @@ function triggerEvent(eventName, eventData) {
 }
 
 function addDisplay(eventName = "") {
-    if ($SD && $SD.websocket && displayContext) {
+    if ($SD && displayContext) {
         displayText = eventName ? (displayText ? displayText + '\n' + eventName : eventName) : "";
         $SD.setTitle(displayContext, displayText, 0);
     }
 }
 
 function removeDisplay() {
-    if ($SD && $SD.websocket && displayContext) {
+    if ($SD && displayContext) {
         $SD.setTitle(displayContext, "", 0);
+    }
+}
+
+// Function to toggle mute/unmute state
+function toggleMute() {
+    isMuted = !isMuted;
+    if ($SD && muteContext) {
+        $SD.setState(muteContext, isMuted); // Set the button state
     }
 }

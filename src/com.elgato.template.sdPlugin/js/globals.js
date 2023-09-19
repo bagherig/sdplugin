@@ -20,5 +20,11 @@ let displayContext = null;
 let displayText = "";
 let displayTimeout = null;
 
+// mute Action
+const muteAction = new Action('com.moeenbagheri.dota2plugin.mute');
+let muteContext = null;
+let isMuted = false; // Variable to track mute state
+
+// Settings
 let globalSettings = {};
 let localSettings = {};

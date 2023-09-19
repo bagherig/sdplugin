@@ -13,7 +13,7 @@ $PI.on('connected', function (event) {
 
 function loadSettings() {
     // Populate the input fields with the retrieved settings
-    document.getElementById("step").value = getSetting(`step`);
+    document.getElementById("step").value = getSetting(`step`) || 1;
 }
 
 function saveSettings() {

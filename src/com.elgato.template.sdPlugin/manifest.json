@@ -32,7 +32,7 @@
         {
           "Image": "static/images/timer",
           "Title": "00:00",
-          "titleAlignment": "middle"
+          "TitleAlignment": "middle"
         }
       ],
       "PropertyInspectorPath": "html/timer.html"
@@ -46,7 +46,7 @@
         {
           "Image": "static/images/display",
           "Title": "",
-          "titleAlignment": "middle"
+          "TitleAlignment": "middle"
         }
       ],
       "PropertyInspectorPath": "html/display.html"
@@ -55,12 +55,14 @@
     {
       "Name": "Increment Timer",
       "UUID": "com.moeenbagheri.dota2plugin.increment",
-      "Icon": "static/images/increment",
+      "Icon": "static/images/add",
       "Tooltip": "Increment the timer by one second.",
       "States": [
         {
           "Image": "static/images/increment",
-          "Title": "+1"
+          "Title": "1",
+          "TitleAlignment": "top",
+          "FontSize": 12
         }
       ],
       "PropertyInspectorPath": "html/increment.html"
@@ -68,15 +70,36 @@
     {
       "Name": "Decrement Timer",
       "UUID": "com.moeenbagheri.dota2plugin.decrement",
-      "Icon": "static/images/decrement",
+      "Icon": "static/images/minus",
       "Tooltip": "Decrement the timer by one second.",
       "States": [
         {
           "Image": "static/images/decrement",
-          "Title": "–1"
+          "Title": "1",
+          "TitleAlignment": "top",
+          "FontSize": 12
         }
       ],
       "PropertyInspectorPath": "html/decrement.html"
+    },
+    {
+      "Name": "Mute/Unmute Alerts",
+      "UUID": "com.moeenbagheri.dota2plugin.mute",
+      "Icon": "static/images/mute",
+      "Tooltip": "Mute/Unmute Alert Sounds",
+      "States": [
+          {
+          "Image": "static/images/unmuted",
+          "Title": "ON",
+          "ShowTitle": false
+        },
+        {
+          "Image": "static/images/muted",
+          "Title": "OFF",
+          "ShowTitle": false
+        }
+      ],
+      "PropertyInspectorPath": "html/mute.html"
     }
   ]
 }
