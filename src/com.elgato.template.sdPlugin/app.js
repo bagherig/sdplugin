@@ -47,7 +47,7 @@ function setEvents() {
     });
 
     incrementAction.onKeyUp(event => {
-        timer.increment(incSteps[event.context]);
+        timer.increment(parseInt(incSteps[event.context]));
     });
 
     // decrementAction
@@ -63,7 +63,7 @@ function setEvents() {
     });
 
     decrementAction.onKeyUp(event => {
-        timer.decrement(decSteps[event.context]);
+        timer.decrement(parseInt(decSteps[event.context]));
     });
 
     // displayAction
@@ -96,13 +96,12 @@ function updateTimer(currentTime) {
 
 function checkForEvents() {
     const timeUnit = getGlobalSetting('timeUnit');
-    const alertTime = getGlobalSetting('alertTime');
 
     const recurringEvents = getGlobalSetting('recurringEvents');
     for (const [eventName, eventData] of Object.entries(recurringEvents)) {
         let interval = eventData.interval;
         interval = timeUnit === "minutes" ? interval * 60 : interval;
-        const shiftedTime = timer.time + eventData.alertTime;
+        const shiftedTime = timer.time + parseInt(eventData.alertTime);
         if (shiftedTime && shiftedTime % interval === 0) {
             triggerEvent(eventName, eventData);
         }
@@ -112,7 +111,7 @@ function checkForEvents() {
     for (const [eventName, eventData] of Object.entries(specialEvents)) {
         let eventTimes = specialEvents[eventName].times;
         eventTimes = timeUnit === "minutes" ? eventTimes.map(t => t * 60) : eventTimes;
-        const shiftedTime = timer.time + eventData.alertTime;
+        const shiftedTime = timer.time + parseInt(eventData.alertTime);
         if (eventTimes.includes(shiftedTime)) {
             triggerEvent(eventName, specialEvents[eventName]);
         }
@@ -123,7 +122,7 @@ function triggerEvent(eventName, eventData) {
     // Play the sound
     playSound(eventData.alertSound);
     addDisplay(eventName);
-    setTimeout(removeDisplay, (eventData.alertTime + 5) * 1000);
+    setTimeout(removeDisplay, (parseInt(eventData.alertTime) + 5) * 1000);
 }
 
 function addDisplay(eventName = "") {
@@ -135,8 +134,6 @@ function addDisplay(eventName = "") {
 
 function removeDisplay() {
     if ($SD && $SD.websocket && displayContext) {
-        displayText = displayText.split('\n').slice(1).join('\n');
-        $SD.setTitle(displayContext, displayText, 0);
-        setTimeout(removeDisplay, (globalSettings.alertTime + 5) * 1000);
+        $SD.setTitle(displayContext, "", 0);
     }
 }

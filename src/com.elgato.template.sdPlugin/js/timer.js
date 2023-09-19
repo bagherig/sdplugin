@@ -16,18 +16,6 @@ $PI.on('connected', function (event) {
     document.getElementById("addSpecialEvent").addEventListener("click", () =>
         addSpecialEventRow()
     );
-    document.getElementById("recurringEventsTable").addEventListener("change", event => {
-        if (event.target.value === "addSound") {
-            const soundUpload = document.getElementById("soundUpload");
-            soundUpload.click();
-        }
-    });
-    document.getElementById("specialEventsTable").addEventListener("change", event => {
-        if (event.target.value === "addSound") {
-            const soundUpload = document.getElementById("soundUpload");
-            soundUpload.click();
-        }
-    });
 });
 
 function addRecurringEventRow(eventName, eventData) {
@@ -45,7 +33,7 @@ function addRecurringEventRow(eventName, eventData) {
     alertSoundCell.innerHTML = `<select onchange="playSound(event.target.value)">
         ${generateSoundOptions(eventData?.alertSound ?? 'Default')}</select>`;
     alertTimeCell.innerHTML = `<input type="number" value="${eventData?.alertTime ?? 15}">`;
-    actionsCell.innerHTML = '<button onclick="removeRecurringEventRow(this)">Remove</button>';
+    actionsCell.innerHTML = '<button onclick="removeRecurringEventRow(this)">DEL</button>';
 }
 
 function generateSoundOptions(selectedSound) {
@@ -73,7 +61,7 @@ function addSpecialEventRow(eventName, eventData) {
     timesCell.innerHTML = `<input type="text" value="${eventData?.times ?? "5, 10"}">`;
     alertSoundCell.innerHTML = `<select>${generateSoundOptions(eventData?.alertSound ?? 'Default')}</select>`;
     alertTimeCell.innerHTML = `<input type="number" value="${eventData?.alertTime ?? 15}">`;
-    actionsCell.innerHTML = '<button onclick="removeSpecialEventRow(this)">Remove</button>';
+    actionsCell.innerHTML = '<button onclick="removeSpecialEventRow(this)">DEL</button>';
 }
 
 function removeSpecialEventRow(buttonElement) {
@@ -111,7 +99,7 @@ function saveSettings() {
         const eventName = row.cells[0].querySelector("input").value;
         const interval = row.cells[1].querySelector("input").value;
         const alertSound = row.cells[2].querySelector("select").value;
-        const alertTime = row.cells[3].querySelector("input").value;
+        const alertTime = parseInt(row.cells[3].querySelector("input").value);
 
         recurringEvents[eventName] = { interval, alertSound, alertTime };
     });
@@ -123,7 +111,7 @@ function saveSettings() {
         const eventName = row.cells[0].querySelector("input").value;
         const times = row.cells[1].querySelector("input").value.split(',').map(x => parseInt(x.trim()));
         const alertSound = row.cells[2].querySelector("select").value;
-        const alertTime = row.cells[3].querySelector("input").value;
+        const alertTime = parseInt(row.cells[3].querySelector("input").value);
 
         specialEvents[eventName] = { times, alertSound, alertTime };
     });
