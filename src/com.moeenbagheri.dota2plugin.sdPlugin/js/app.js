@@ -125,6 +125,7 @@ function setEvents() {
     displayAction.onDidReceiveSettings(event => {
         const role = event.payload.settings.role || 'event';
         $SD.setTitle(event.context, `${role.toUpperCase()}`, 0);
+        $SD.setImage(event.context, `static/images/${role.toLowerCase()}.png`, 0);
         displayContexts[role] = event.context;
     });
 
