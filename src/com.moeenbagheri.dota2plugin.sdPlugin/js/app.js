@@ -26,7 +26,7 @@ let decrementSteps = {};
 
 // display Action
 const displayAction = new Action('com.moeenbagheri.dota2plugin.display');
-let displayContext = null;
+let displayContexts = {};
 let displayText = "";
 let displayTimeout = null;
 
@@ -48,11 +48,14 @@ function setEvents() {
 
     ws.onmessage = (event) => {
         const gameState = JSON.parse(event.data);
-        console.log(gameState);
-        // TODO: Process the game state data and update the plugin
-        // For example:
-        // const playerHealth = gameState.player.health;
-        // Update the plugin's display with the player's health
+        if ('clockTime' in gameState)
+            timer.time = gameState.clockTime;
+        else {
+            for (const key of ['gpm', 'xpm']) {
+                if (key in gameState && displayContexts[key])
+                    $SD.setTitle(displayContexts[key], `${key.toUpperCase()}\n${gameState[key]}`, 0);
+            }
+        }
     };
 
     $SD.on(Events.didReceiveGlobalSettings, function (event) {
@@ -70,17 +73,17 @@ function setEvents() {
         timerContext = event.context;
     });
 
-    timerAction.onKeyDown(({ action, context, device, event, payload }) => {
-        timerTimeout = setTimeout(() => timer.reset(), 1500);
-    });
-
-    timerAction.onKeyUp(event => {
-        clearTimeout(timerTimeout);
-        if (timer.running)
-            timer.pause();
-        else
-            timer.start();
-    });
+    // timerAction.onKeyDown(({ action, context, device, event, payload }) => {
+    //     timerTimeout = setTimeout(() => timer.reset(), 1500);
+    // });
+    //
+    // timerAction.onKeyUp(event => {
+    //     clearTimeout(timerTimeout);
+    //     if (timer.running)
+    //         timer.pause();
+    //     else
+    //         timer.start();
+    // });
 
     // incrementAction
     incrementAction.onWillAppear(event => {
@@ -116,11 +119,17 @@ function setEvents() {
 
     // displayAction
     displayAction.onWillAppear(event => {
-        displayContext = event.context;
+        $SD.getSettings(event.context);
+    });
+
+    displayAction.onDidReceiveSettings(event => {
+        const role = event.payload.settings.role || 'event';
+        $SD.setTitle(event.context, `${role.toUpperCase()}`, 0);
+        displayContexts[role] = event.context;
     });
 
     displayAction.onKeyDown(({ action, context, device, event, payload }) => {
-        displayTimeout = setTimeout(addDisplay, 1500);
+        displayTimeout = setTimeout(addDisplayName, 1500);
     });
 
     displayAction.onKeyUp(event => {
@@ -207,6 +216,8 @@ function triggerEvent(eventName, eventData) {
 }
 
 function addDisplayName(eventName = "") {
+    const displayContext = displayContexts['event'];
+
     if ($SD && displayContext) {
         displayText = eventName ? (displayText ? displayText + '\n' + eventName : eventName) : "";
         $SD.setTitle(displayContext, displayText, 0);
@@ -214,6 +225,8 @@ function addDisplayName(eventName = "") {
 }
 
 function removeDisplayName() {
+    const displayContext = displayContexts['event'];
+
     if ($SD && displayContext) {
         displayText = displayText ? displayText.split('\n').slice(1).join('\n') : "";
         $SD.setTitle(displayContext, displayText, 0);

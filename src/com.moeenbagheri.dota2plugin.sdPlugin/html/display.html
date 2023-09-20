@@ -4,17 +4,21 @@
 <head>
     <title>com.moeenbagheri.dota2plugin.display</title>
     <meta charset="utf-8"/>
-    <style>
-        html, body {
-            background-color: transparent;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/sdpi.css">
 </head>
 
 <body>
     <div>
         <h3>Display Button</h3>
-        <p>This button displays the name of the events.</p>
+        <p>This button displays something!</p>
+
+        <label> Role:
+            <select id="role">
+                <option value="event" selected> Event </option>
+                <option value="gpm"> GPM </option>
+                <option value="xpm"> XPM </option>
+            </select>
+        </label>
     </div>
 
 
@@ -23,8 +27,11 @@
     <script src="../libs/js/events.js"></script>
     <script src="../libs/js/api.js"></script>
     <script src="../libs/js/property-inspector.js"></script>
+    <script src="../libs/js/action.js"></script>
 
     <!-- Property Inspector Source -->
+    <script src="../js/settings.js"></script>
+    <script src="../js/display.js"></script>
 </body>
 
 </html>

@@ -1,34 +1,29 @@
-const express = require('express');
-const bodyParser = require('body-parser');
 const WebSocket = require('ws');
+const GSI = require('dota2-gsi');
 
-const app = express();
-const PORT = 3000;
-const IP_ADDRESS = '0.0.0.0';  // Listen on all network interfaces
+const PORT = 8084;
+const wss = new WebSocket.Server({ port: PORT });
+const gsi = new GSI({ port: 3000 });
 
-// Middleware to parse JSON requests
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+function sendToFrontend(data) {
+    wss.clients.forEach(ws => {
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify(data));
+        }
+    });
+}
 
-// WebSocket setup
-const wss = new WebSocket.Server({ port: 8084 });
+gsi.events.on('newclient', (client) => {
+    console.log('New client connected:', client.ip);
+
+    // client.on('newdata', newdata => console.log(newdata));
+    client.on('map:clock_time', clockTime => sendToFrontend({ clockTime }));
+    client.on('player:gpm', gpm => sendToFrontend({ gpm }));
+    client.on('player:xpm', xpm => sendToFrontend({ xpm }));
+});
 
 wss.on('connection', (ws) => {
-    console.log('Client connected');
+    console.log('WebSocket client connected');
 });
 
-// Endpoint to receive data from Dota 2 GSI
-app.post('/', (req, res) => {
-    console.log(req.body); // Log the game state data
-    // TODO: Process the data and send it to the frontend
-    res.sendStatus(200); // Send a success response
-});
-
-app.listen(PORT, IP_ADDRESS, () => {
-    console.log(`Server is running on ${IP_ADDRESS}:${PORT}`);
-});
-
-app.use((req, res, next) => {
-    console.log(`Received request: ${req.method} ${req.url}`);
-    next();
-});
+console.log(`WebSocket server is running on port ${PORT}`);

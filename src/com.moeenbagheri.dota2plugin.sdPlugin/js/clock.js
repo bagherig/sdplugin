@@ -1,9 +1,20 @@
 class Clock {
     constructor(updateCallback) {
-        this.time = 0;
+        this._time = 0;
         this.intervalId = null;
         this.running = false;
         this.updateCallback = updateCallback;
+    }
+
+    get time() {
+        return this._time;
+    }
+
+    set time(val) {
+        val = (typeof val === "string") ? parseInt(val) : val;
+        if (this._time === val) return;
+        this._time = val;
+        this.updateCallback(this._time);
     }
 
     start() {
@@ -30,13 +41,13 @@ class Clock {
     }
 
     increment(val=1) {
-        val = (typeof val === "string") ? parseInt(val) : val; // Corrected the type check
+        val = (typeof val === "string") ? parseInt(val) : val;
         this.time += val;
         this.updateCallback(this.time);
     }
 
     decrement(val=1) {
-        val = (typeof val === "string") ? parseInt(val) : val; // Corrected the type check
+        val = (typeof val === "string") ? parseInt(val) : val;
         this.time -= val;
         this.updateCallback(this.time);
     }

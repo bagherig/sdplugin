@@ -46,7 +46,8 @@
         {
           "Image": "static/images/display",
           "Title": "",
-          "TitleAlignment": "middle"
+          "TitleAlignment": "middle",
+          "FontSize": 12
         }
       ],
       "PropertyInspectorPath": "html/display.html"
