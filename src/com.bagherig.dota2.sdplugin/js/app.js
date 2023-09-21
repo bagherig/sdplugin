@@ -12,31 +12,31 @@ const timer = new Clock((time) => {
 let globalSettings = {};
 
 // Timer Action
-const timerAction = new Action('com.moeenbagheri.dota2plugin.timer');
+const timerAction = new Action('com.bagherig.dota2.timer');
 let timerContext = null;
 let timerTimeout = null;
 
 // Increment Action
-const incrementAction = new Action('com.moeenbagheri.dota2plugin.increment');
+const incrementAction = new Action('com.bagherig.dota2.increment');
 let incrementSteps = {};
 
 // Decrement Action
-const decrementAction = new Action('com.moeenbagheri.dota2plugin.decrement');
+const decrementAction = new Action('com.bagherig.dota2.decrement');
 let decrementSteps = {};
 
 // display Action
-const displayAction = new Action('com.moeenbagheri.dota2plugin.display');
+const displayAction = new Action('com.bagherig.dota2.display');
 let displayContexts = {};
 let displayText = "";
 let displayTimeout = null;
 
 // mute Action
-const muteAction = new Action('com.moeenbagheri.dota2plugin.mute');
+const muteAction = new Action('com.bagherig.dota2.mute');
 let muteContext = null;
 let isMuted = false; // Variable to track mute state
 
 // image Action
-const imageAction = new Action('com.moeenbagheri.dota2plugin.image');
+const imageAction = new Action('com.bagherig.dota2.image');
 let imageShowings = {};
 let imageTimeouts = {};
 

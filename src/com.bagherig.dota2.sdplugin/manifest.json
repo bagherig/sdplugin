@@ -5,6 +5,7 @@
   "Description": "DotA-2 game plugin with timer and event notifications.",
   "Category": "Games",
   "Icon": "static/images/timer",
+  "CategoryIcon": "static/images/timer",
   "Name": "DotA-2 Game Plugin",
   "Version": "1.0",
   "URL": "https://www.moeenbagheri.com",
@@ -21,11 +22,11 @@
       "MinimumVersion": "10"
     }
   ],
-  "CategoryIcon": "static/images/timer",
+  "ApplicationsToMonitor": ["dota2.exe"],
   "Actions": [
     {
       "Name": "Main Timer",
-      "UUID": "com.moeenbagheri.dota2plugin.timer",
+      "UUID": "com.bagherig.dota2.timer",
       "Icon": "static/images/timer",
       "Tooltip": "Main timer button for pausing, resuming, and displaying events.",
       "States": [
@@ -39,7 +40,7 @@
     },
     {
       "Name": "Event Display",
-      "UUID": "com.moeenbagheri.dota2plugin.display",
+      "UUID": "com.bagherig.dota2.display",
       "Icon": "static/images/display",
       "Tooltip": "Displays the occurring event names.",
       "States": [
@@ -55,7 +56,7 @@
 
     {
       "Name": "Increment Timer",
-      "UUID": "com.moeenbagheri.dota2plugin.increment",
+      "UUID": "com.bagherig.dota2.increment",
       "Icon": "static/images/add",
       "Tooltip": "Increment the timer by one second.",
       "States": [
@@ -70,7 +71,7 @@
     },
     {
       "Name": "Decrement Timer",
-      "UUID": "com.moeenbagheri.dota2plugin.decrement",
+      "UUID": "com.bagherig.dota2.decrement",
       "Icon": "static/images/minus",
       "Tooltip": "Decrement the timer by one second.",
       "States": [
@@ -85,7 +86,7 @@
     },
     {
       "Name": "Mute/Unmute Alerts",
-      "UUID": "com.moeenbagheri.dota2plugin.mute",
+      "UUID": "com.bagherig.dota2.mute",
       "Icon": "static/images/mute",
       "Tooltip": "Mute/Unmute Alert Sounds",
       "States": [
@@ -104,7 +105,7 @@
     },
     {
       "Name": "Event Image",
-      "UUID": "com.moeenbagheri.dota2plugin.image",
+      "UUID": "com.bagherig.dota2.image",
       "Icon": "static/images/image",
       "Tooltip": "Displays event image.",
       "States": [

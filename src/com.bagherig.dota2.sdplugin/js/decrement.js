@@ -1,5 +1,5 @@
 let localSettings = {};
-const decrementAction = new Action('com.moeenbagheri.dota2plugin.decrement');
+const decrementAction = new Action('com.bagherig.dota2.decrement');
 
 decrementAction.onDidReceiveSettings(function (event) {
     localSettings = event.payload.settings;

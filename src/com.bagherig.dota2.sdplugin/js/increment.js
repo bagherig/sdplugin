@@ -1,5 +1,5 @@
 let localSettings = {};
-const incrementAction = new Action('com.moeenbagheri.dota2plugin.increment');
+const incrementAction = new Action('com.bagherig.dota2.increment');
 
 incrementAction.onDidReceiveSettings(function (event) {
     localSettings = event.payload.settings;

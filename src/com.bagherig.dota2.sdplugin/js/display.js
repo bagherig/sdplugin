@@ -1,5 +1,5 @@
 let localSettings = {};
-const displayAction = new Action('com.moeenbagheri.dota2plugin.display');
+const displayAction = new Action('com.bagherig.dota2.display');
 
 displayAction.onDidReceiveSettings(function (event) {
     localSettings = event.payload.settings;
