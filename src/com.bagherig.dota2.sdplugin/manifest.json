@@ -33,7 +33,8 @@
         {
           "Image": "static/images/timer",
           "Title": "00:00",
-          "TitleAlignment": "middle"
+          "TitleAlignment": "middle",
+          "UserTitleEnabled": false
         }
       ],
       "PropertyInspectorPath": "html/timer.html"
@@ -48,7 +49,8 @@
           "Image": "static/images/display",
           "Title": "",
           "TitleAlignment": "middle",
-          "FontSize": 12
+          "FontSize": 12,
+          "UserTitleEnabled": false
         }
       ],
       "PropertyInspectorPath": "html/display.html"

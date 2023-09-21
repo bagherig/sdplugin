@@ -1,5 +1,5 @@
 
-const PORT = 8084;
+const PORT = 4445;
 const ws = new WebSocket(`ws://localhost:${PORT}`);
 
 // Timer
@@ -67,6 +67,10 @@ function setEvents() {
         $SD.getGlobalSettings();
         timer.reset();
     });
+
+    $SD.onApplicationDidLaunch(() => {
+
+    })
 
     // timerAction
     timerAction.onWillAppear(event => {

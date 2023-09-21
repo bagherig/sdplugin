@@ -3,9 +3,9 @@ const GSI = require('dota2-gsi');
 
 class Dota2PluginServer {
     constructor() {
-        this.PORT = 8084;
+        this.PORT = 4445;
         this.wss = new WebSocket.Server({ port: this.PORT });
-        this.gsi = new GSI({ port: 3000 });
+        this.gsi = new GSI({ port: 4444 });
         this.setEvents();
     }
 
